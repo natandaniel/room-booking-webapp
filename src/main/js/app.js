@@ -157,35 +157,37 @@ class Room extends React.Component{
 	
 	constructor(props) {
 		super(props);
-		this.state = {meetings: [], pageSize: 5};
-		this.updatePageSize = this.updatePageSize.bind(this);
+		this.state = {meetings: []};
+		this.onBooking = this.onBooking.bind(this);
+		this.onCancelling = this.onCancelling.bind(this);
 	}
 	
-	loadFromServer(pageSize) {
-		follow(client, this.props.room._links.self.href, [
-			{rel: 'meetings', params: {size: pageSize}}]
-		).done(meetingCollection => {
-			this.setState({
-				meetings: meetingCollection.entity._embedded.meetings,
-				pageSize: pageSize,
-				links: meetingCollection.entity._links});
+	onBooking(meeting) {
+		client({method: 'POST', path: '/api/bookings/make/1/1'}).done(response => {
+			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+				this.setState({
+					meetings: response.entity._embedded.meetings
+				});
+			});
 		});
 	}
-
-	updatePageSize(pageSize) {
-		if (pageSize !== this.state.pageSize) {
-			this.loadFromServer(pageSize);
-		}
+	
+	onCancelling(meeting) {
+		client({method: 'PUT', path: '/api/bookings/cancel/10'}).done(response => {
+			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+				this.setState({
+					meetings: response.entity._embedded.meetings
+				});
+			});
+		});
 	}
 	
 	componentDidMount() {
-		this.loadFromServer(this.state.pageSize);
-//		client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
-//			this.setState({
-//				meetings: response.entity._embedded.meetings,
-//				pageSize: pageSize
-//			});
-//		});
+		client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+			this.setState({
+				meetings: response.entity._embedded.meetings
+			});
+		});
 	}
 	
 	render() {
@@ -195,9 +197,10 @@ class Room extends React.Component{
 					<td>{this.props.room.roomName}</td>
 				</tr>
 				<MeetingList meetings={this.state.meetings}
-						  links={this.state.links}
-						  pageSize={this.state.pageSize}
-						  updatePageSize={this.updatePageSize}/>
+						  		links={this.state.links}
+								onBooking={this.onBooking}
+								onCancelling={this.onCancelling}
+						  />
 		    </div>
 		)
 	}
@@ -211,11 +214,12 @@ class MeetingList extends React.Component{
 	
 	render() {
 		var meetings = this.props.meetings.map(meeting =>
-			<Meeting key={meeting._links.self.href} meeting={meeting} />
+			<Meeting key={meeting._links.self.href} meeting={meeting} onBooking={this.props.onBooking} onCancelling={this.props.onCancelling}/>
 		);
 
 		return (
 			<div className="container">
+			<input ref="pageSize" defaultValue={this.props.pageSize} onInput={this.handleInput}/>
 				<table className="table table-striped">
 					<tbody>
 						<tr>
@@ -232,12 +236,33 @@ class MeetingList extends React.Component{
 }
 
 class Meeting extends React.Component{
+	
+	constructor(props) {
+		super(props);
+		this.handleBooking = this.handleBooking.bind(this);
+		this.handleCancelling = this.handleCancelling.bind(this);
+	}
+
+	handleBooking() {
+		this.props.onBooking(this.props.meeting);
+	}
+	
+	handleCancelling() {
+		this.props.onCancelling(this.props.meeting);
+	}
+	
 	render() {
 		return (
 			<tr>
 				<td>{this.props.meeting.meetingStartTime}</td>
-				<td>{this.props.meeting.meetingBookable}</td>
-				<td>{this.props.meeting.meetingBooked}</td>
+				<td>{this.props.meeting.meetingBookable.toString()}</td>
+				<td>{this.props.meeting.meetingBooked.toString()}</td>
+				<td>
+					<button onClick={this.handleBooking}>Book</button>
+				</td>
+				<td>
+				<button onClick={this.handleCancelling}>Cancel Booking</button>
+			</td>
 			</tr>
 		)
 	}
