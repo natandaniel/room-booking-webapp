@@ -1,6 +1,5 @@
 'use strict';
 
-
 const React = require('react');
 const ReactDOM = require('react-dom');
 const client = require('./client');
@@ -13,7 +12,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], meetings: [], attributes: [], pageSize: 2, links: {}};
+		this.state = {rooms: [], attributes: [], pageSize: 2, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
 	}
@@ -73,7 +72,6 @@ class App extends React.Component {
 	}
 }
 
-
 class RoomList extends React.Component {
 
 	constructor(props) {
@@ -82,11 +80,9 @@ class RoomList extends React.Component {
 		this.handleNavPrev = this.handleNavPrev.bind(this);
 		this.handleNavNext = this.handleNavNext.bind(this);
 		this.handleNavLast = this.handleNavLast.bind(this);
-		this.handleNavMeetings = this.handleNavMeetings.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 	}
 
-	// tag::handle-page-size-updates[]
 	handleInput(e) {
 		e.preventDefault();
 		var pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
@@ -97,7 +93,6 @@ class RoomList extends React.Component {
 				pageSize.substring(0, pageSize.length - 1);
 		}
 	}
-	// end::handle-page-size-updates[]
 
 	// tag::handle-nav[]
 	handleNavFirst(e){
@@ -119,11 +114,6 @@ class RoomList extends React.Component {
 		e.preventDefault();
 		this.props.onNavigate(this.props.links.last.href);
 	}
-
-	handleNavMeetings(e) {
-		e.preventDefault();
-		this.props.onNavigate(this.props.links.meetings.href);
-	}
 	
 	render() {
 		var rooms = this.props.rooms.map(room =>
@@ -143,9 +133,6 @@ class RoomList extends React.Component {
 		if ("last" in this.props.links) {
 			navLinks.push(<button key="last" onClick={this.handleNavLast}>&gt;&gt;</button>);
 		}
-		if ("meetings" in this.props.links) {
-			navLinks.push(<button key="meetings" onClick={this.handleNavMeetings}>meetings</button>);
-		}
 
 		return (
 			<div className="container">
@@ -154,7 +141,6 @@ class RoomList extends React.Component {
 					<tbody>
 						<tr>
 							<th>Room Name</th>
-							<th></th>
 						</tr>
 						{rooms}
 					</tbody>
@@ -168,16 +154,79 @@ class RoomList extends React.Component {
 }
 
 class Room extends React.Component{
+	
+	constructor(props) {
+		super(props);
+		this.state = {meetings: [], pageSize: 5};
+		this.updatePageSize = this.updatePageSize.bind(this);
+	}
+	
+	loadFromServer(pageSize) {
+		follow(client, this.props.room._links.self.href, [
+			{rel: 'meetings', params: {size: pageSize}}]
+		).done(meetingCollection => {
+			this.setState({
+				meetings: meetingCollection.entity._embedded.meetings,
+				pageSize: pageSize,
+				links: meetingCollection.entity._links});
+		});
+	}
+
+	updatePageSize(pageSize) {
+		if (pageSize !== this.state.pageSize) {
+			this.loadFromServer(pageSize);
+		}
+	}
+	
+	componentDidMount() {
+		this.loadFromServer(this.state.pageSize);
+//		client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+//			this.setState({
+//				meetings: response.entity._embedded.meetings,
+//				pageSize: pageSize
+//			});
+//		});
+	}
+	
+	render() {
+		return (
+			<div>
+				<tr>
+					<td>{this.props.room.roomName}</td>
+				</tr>
+				<MeetingList meetings={this.state.meetings}
+						  links={this.state.links}
+						  pageSize={this.state.pageSize}
+						  updatePageSize={this.updatePageSize}/>
+		    </div>
+		)
+	}
+}
+
+class MeetingList extends React.Component{
+	
 	constructor(props) {
 		super(props);
 	}
-
+	
 	render() {
+		var meetings = this.props.meetings.map(meeting =>
+			<Meeting key={meeting._links.self.href} meeting={meeting} />
+		);
+
 		return (
-			<tr>
-				<td>{this.props.room.roomName}</td>
-				<td>{this.props.room.meetings}</td>
-			</tr>
+			<div className="container">
+				<table className="table table-striped">
+					<tbody>
+						<tr>
+							<th>Meeting Start Time</th>
+							<th>Is Meeting Bookable</th>
+							<th>Is Meeting Booked</th>
+						</tr>
+						{meetings}
+					</tbody>
+				</table>
+			</div>
 		)
 	}
 }
@@ -187,6 +236,8 @@ class Meeting extends React.Component{
 		return (
 			<tr>
 				<td>{this.props.meeting.meetingStartTime}</td>
+				<td>{this.props.meeting.meetingBookable}</td>
+				<td>{this.props.meeting.meetingBooked}</td>
 			</tr>
 		)
 	}
