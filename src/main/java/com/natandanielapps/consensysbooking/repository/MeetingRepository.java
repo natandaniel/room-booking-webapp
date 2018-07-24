@@ -8,4 +8,5 @@ import com.natandanielapps.consensysbooking.model.Meeting;
 @Repository
 public interface MeetingRepository extends PagingAndSortingRepository<Meeting, Long> {
 
+	Meeting findByDescription(String description);
 }

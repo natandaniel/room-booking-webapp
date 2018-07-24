@@ -29,7 +29,7 @@ public class RoomServiceImpl implements IRoomService {
 
 			Date d = cal.getTime();
 
-			Meeting meeting = new Meeting(d, true, false, room);
+			Meeting meeting = new Meeting(roomName + d.toString(),d, true, false, room);
 			meetings.save(meeting);
 		}
 

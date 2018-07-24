@@ -163,7 +163,7 @@ class Room extends React.Component{
 	}
 	
 	onBooking(meeting) {
-		client({method: 'POST', path: '/api/bookings/make/1/1'}).done(response => {
+		client({method: 'POST', path: '/api/bookings/make/' + meeting.description}).done(response => {
 			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
 				this.setState({
 					meetings: response.entity._embedded.meetings
@@ -173,7 +173,7 @@ class Room extends React.Component{
 	}
 	
 	onCancelling(meeting) {
-		client({method: 'PUT', path: '/api/bookings/cancel/10'}).done(response => {
+		client({method: 'PUT', path: '/api/bookings/cancel/' + meeting.description}).done(response => {
 			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
 				this.setState({
 					meetings: response.entity._embedded.meetings

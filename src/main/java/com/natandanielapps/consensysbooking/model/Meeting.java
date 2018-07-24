@@ -37,6 +37,8 @@ public class Meeting implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	private String description;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date meetingStartTime;
@@ -70,11 +72,12 @@ public class Meeting implements Serializable {
 
 	}
 
-	public Meeting(@NotBlank Date meetingStartTime, @NotBlank boolean isMeetingBookable,
+	public Meeting(@NotBlank String description, @NotBlank Date meetingStartTime, @NotBlank boolean isMeetingBookable,
 			@NotBlank boolean isMeetingBooked, @NotBlank Room room) {
 		this.meetingStartTime = meetingStartTime;
 		this.isMeetingBookable = isMeetingBookable;
 		this.isMeetingBooked = isMeetingBooked;
+		this.description = description;
 		this.room = room;
 	}
 }
