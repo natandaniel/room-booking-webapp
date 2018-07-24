@@ -46,8 +46,6 @@
 
 	'use strict';
 	
-	// tag::vars[]
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -59,9 +57,10 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(37);
 	var client = __webpack_require__(184);
-	// end::vars[]
 	
-	// tag::app[]
+	var follow = __webpack_require__(232);
+	
+	var root = '/api';
 	
 	var App = function (_React$Component) {
 		_inherits(App, _React$Component);
@@ -71,64 +70,214 @@
 	
 			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
-			_this.state = { rooms: [] };
+			_this.state = { rooms: [], meetings: [], attributes: [], pageSize: 2, links: {} };
+			_this.updatePageSize = _this.updatePageSize.bind(_this);
+			_this.onNavigate = _this.onNavigate.bind(_this);
 			return _this;
 		}
 	
 		_createClass(App, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
+			key: 'loadFromServer',
+			value: function loadFromServer(pageSize) {
 				var _this2 = this;
 	
-				client({ method: 'GET', path: '/api/rooms' }).done(function (response) {
-					_this2.setState({ rooms: response.entity._embedded.rooms });
+				follow(client, root, [{ rel: 'rooms', params: { size: pageSize } }]).then(function (roomCollection) {
+					return client({
+						method: 'GET',
+						path: roomCollection.entity._links.profile.href,
+						headers: { 'Accept': 'application/schema+json' }
+					}).then(function (schema) {
+						_this2.schema = schema.entity;
+						return roomCollection;
+					});
+				}).done(function (roomCollection) {
+					_this2.setState({
+						rooms: roomCollection.entity._embedded.rooms,
+						attributes: Object.keys(_this2.schema.properties),
+						pageSize: pageSize,
+						links: roomCollection.entity._links });
 				});
+			}
+		}, {
+			key: 'onNavigate',
+			value: function onNavigate(navUri) {
+				var _this3 = this;
+	
+				client({ method: 'GET', path: navUri }).done(function (roomCollection) {
+					_this3.setState({
+						rooms: roomCollection.entity._embedded.rooms,
+						attributes: _this3.state.attributes,
+						pageSize: _this3.state.pageSize,
+						links: roomCollection.entity._links
+					});
+				});
+			}
+		}, {
+			key: 'updatePageSize',
+			value: function updatePageSize(pageSize) {
+				if (pageSize !== this.state.pageSize) {
+					this.loadFromServer(pageSize);
+				}
+			}
+		}, {
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.loadFromServer(this.state.pageSize);
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				return React.createElement(RoomList, { rooms: this.state.rooms });
+				return React.createElement(
+					'div',
+					null,
+					React.createElement(RoomList, { rooms: this.state.rooms,
+						links: this.state.links,
+						pageSize: this.state.pageSize,
+						onNavigate: this.onNavigate,
+						updatePageSize: this.updatePageSize })
+				);
 			}
 		}]);
 	
 		return App;
 	}(React.Component);
-	// end::app[]
-	
-	// tag::room-list[]
-	
 	
 	var RoomList = function (_React$Component2) {
 		_inherits(RoomList, _React$Component2);
 	
-		function RoomList() {
+		function RoomList(props) {
 			_classCallCheck(this, RoomList);
 	
-			return _possibleConstructorReturn(this, (RoomList.__proto__ || Object.getPrototypeOf(RoomList)).apply(this, arguments));
+			var _this4 = _possibleConstructorReturn(this, (RoomList.__proto__ || Object.getPrototypeOf(RoomList)).call(this, props));
+	
+			_this4.handleNavFirst = _this4.handleNavFirst.bind(_this4);
+			_this4.handleNavPrev = _this4.handleNavPrev.bind(_this4);
+			_this4.handleNavNext = _this4.handleNavNext.bind(_this4);
+			_this4.handleNavLast = _this4.handleNavLast.bind(_this4);
+			_this4.handleNavMeetings = _this4.handleNavMeetings.bind(_this4);
+			_this4.handleInput = _this4.handleInput.bind(_this4);
+			return _this4;
 		}
 	
+		// tag::handle-page-size-updates[]
+	
+	
 		_createClass(RoomList, [{
+			key: 'handleInput',
+			value: function handleInput(e) {
+				e.preventDefault();
+				var pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
+				if (/^[0-9]+$/.test(pageSize)) {
+					this.props.updatePageSize(pageSize);
+				} else {
+					ReactDOM.findDOMNode(this.refs.pageSize).value = pageSize.substring(0, pageSize.length - 1);
+				}
+			}
+			// end::handle-page-size-updates[]
+	
+			// tag::handle-nav[]
+	
+		}, {
+			key: 'handleNavFirst',
+			value: function handleNavFirst(e) {
+				e.preventDefault();
+				this.props.onNavigate(this.props.links.first.href);
+			}
+		}, {
+			key: 'handleNavPrev',
+			value: function handleNavPrev(e) {
+				e.preventDefault();
+				this.props.onNavigate(this.props.links.prev.href);
+			}
+		}, {
+			key: 'handleNavNext',
+			value: function handleNavNext(e) {
+				e.preventDefault();
+				this.props.onNavigate(this.props.links.next.href);
+			}
+		}, {
+			key: 'handleNavLast',
+			value: function handleNavLast(e) {
+				e.preventDefault();
+				this.props.onNavigate(this.props.links.last.href);
+			}
+		}, {
+			key: 'handleNavMeetings',
+			value: function handleNavMeetings(e) {
+				e.preventDefault();
+				this.props.onNavigate(this.props.links.meetings.href);
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var rooms = this.props.rooms.map(function (room) {
 					return React.createElement(Room, { key: room._links.self.href, room: room });
 				});
+	
+				var navLinks = [];
+				if ("first" in this.props.links) {
+					navLinks.push(React.createElement(
+						'button',
+						{ key: 'first', onClick: this.handleNavFirst },
+						'<<'
+					));
+				}
+				if ("prev" in this.props.links) {
+					navLinks.push(React.createElement(
+						'button',
+						{ key: 'prev', onClick: this.handleNavPrev },
+						'<'
+					));
+				}
+				if ("next" in this.props.links) {
+					navLinks.push(React.createElement(
+						'button',
+						{ key: 'next', onClick: this.handleNavNext },
+						'>'
+					));
+				}
+				if ("last" in this.props.links) {
+					navLinks.push(React.createElement(
+						'button',
+						{ key: 'last', onClick: this.handleNavLast },
+						'>>'
+					));
+				}
+				if ("meetings" in this.props.links) {
+					navLinks.push(React.createElement(
+						'button',
+						{ key: 'meetings', onClick: this.handleNavMeetings },
+						'meetings'
+					));
+				}
+	
 				return React.createElement(
-					'table',
-					null,
+					'div',
+					{ className: 'container' },
+					React.createElement('input', { ref: 'pageSize', defaultValue: this.props.pageSize, onInput: this.handleInput }),
 					React.createElement(
-						'tbody',
-						null,
+						'table',
+						{ className: 'table table-striped' },
 						React.createElement(
-							'tr',
+							'tbody',
 							null,
 							React.createElement(
-								'th',
+								'tr',
 								null,
-								'Room Name'
-							)
-						),
-						rooms
+								React.createElement(
+									'th',
+									null,
+									'Room Name'
+								),
+								React.createElement('th', null)
+							),
+							rooms
+						)
+					),
+					React.createElement(
+						'div',
+						null,
+						navLinks
 					)
 				);
 			}
@@ -136,18 +285,14 @@
 	
 		return RoomList;
 	}(React.Component);
-	// end::room-list[]
-	
-	// tag::room[]
-	
 	
 	var Room = function (_React$Component3) {
 		_inherits(Room, _React$Component3);
 	
-		function Room() {
+		function Room(props) {
 			_classCallCheck(this, Room);
 	
-			return _possibleConstructorReturn(this, (Room.__proto__ || Object.getPrototypeOf(Room)).apply(this, arguments));
+			return _possibleConstructorReturn(this, (Room.__proto__ || Object.getPrototypeOf(Room)).call(this, props));
 		}
 	
 		_createClass(Room, [{
@@ -160,6 +305,11 @@
 						'td',
 						null,
 						this.props.room.roomName
+					),
+					React.createElement(
+						'td',
+						null,
+						this.props.room.meetings
 					)
 				);
 			}
@@ -167,13 +317,35 @@
 	
 		return Room;
 	}(React.Component);
-	// end::room[]
 	
-	// tag::render[]
+	var Meeting = function (_React$Component4) {
+		_inherits(Meeting, _React$Component4);
 	
+		function Meeting() {
+			_classCallCheck(this, Meeting);
+	
+			return _possibleConstructorReturn(this, (Meeting.__proto__ || Object.getPrototypeOf(Meeting)).apply(this, arguments));
+		}
+	
+		_createClass(Meeting, [{
+			key: 'render',
+			value: function render() {
+				return React.createElement(
+					'tr',
+					null,
+					React.createElement(
+						'td',
+						null,
+						this.props.meeting.meetingStartTime
+					)
+				);
+			}
+		}]);
+	
+		return Meeting;
+	}(React.Component);
 	
 	ReactDOM.render(React.createElement(App, null), document.getElementById('react'));
-	// end::render[]
 
 /***/ }),
 /* 1 */
@@ -27106,6 +27278,53 @@
 			}
 		};
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 232 */
+/***/ (function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function follow(api, rootPath, relArray) {
+		var root = api({
+			method: 'GET',
+			path: rootPath
+		});
+	
+		return relArray.reduce(function (root, arrayItem) {
+			var rel = typeof arrayItem === 'string' ? arrayItem : arrayItem.rel;
+			return traverseNext(root, rel, arrayItem);
+		}, root);
+	
+		function traverseNext(root, rel, arrayItem) {
+			return root.then(function (response) {
+				if (hasEmbeddedRel(response.entity, rel)) {
+					return response.entity._embedded[rel];
+				}
+	
+				if (!response.entity._links) {
+					return [];
+				}
+	
+				if (typeof arrayItem === 'string') {
+					return api({
+						method: 'GET',
+						path: response.entity._links[rel].href
+					});
+				} else {
+					return api({
+						method: 'GET',
+						path: response.entity._links[rel].href,
+						params: arrayItem.params
+					});
+				}
+			});
+		}
+	
+		function hasEmbeddedRel(entity, rel) {
+			return entity._embedded && entity._embedded.hasOwnProperty(rel);
+		}
+	};
 
 /***/ })
 /******/ ]);
