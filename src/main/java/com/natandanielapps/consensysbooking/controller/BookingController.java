@@ -79,14 +79,14 @@ public class BookingController {
 		Booking bookingToCancel = null;
 		
 		for(Booking booking : empBookings) {
-			if(booking.getMeeting() == meeting) {
+			if(booking.getMeeting() == meeting && !booking.isCancelled()) {
 				bookingToCancel = booking;
 			}
 		}
 		
 		Booking cancelledBooking = null;
 		
-		if(bookingToCancel != null) {
+		if(bookingToCancel != null && !bookingToCancel.isCancelled()) {
 			cancelledBooking = bookingService.cancelBooking(bookingToCancel.getId(), bookings, meetings);
 		}
 
