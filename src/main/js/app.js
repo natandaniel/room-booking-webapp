@@ -12,7 +12,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], attributes: [], pageSize: 2, links: {}};
+		this.state = {rooms: [], attributes: [], pageSize: 1, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
 	}
@@ -80,18 +80,6 @@ class RoomList extends React.Component {
 		this.handleNavPrev = this.handleNavPrev.bind(this);
 		this.handleNavNext = this.handleNavNext.bind(this);
 		this.handleNavLast = this.handleNavLast.bind(this);
-		this.handleInput = this.handleInput.bind(this);
-	}
-
-	handleInput(e) {
-		e.preventDefault();
-		var pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
-		if (/^[0-9]+$/.test(pageSize)) {
-			this.props.updatePageSize(pageSize);
-		} else {
-			ReactDOM.findDOMNode(this.refs.pageSize).value =
-				pageSize.substring(0, pageSize.length - 1);
-		}
 	}
 
 	// tag::handle-nav[]
@@ -136,7 +124,6 @@ class RoomList extends React.Component {
 
 		return (
 			<div className="container">
-				<input ref="pageSize" defaultValue={this.props.pageSize} onInput={this.handleInput}/>
 				<table className="table table-striped">
 					<tbody>
 						<tr>
@@ -163,13 +150,17 @@ class Room extends React.Component{
 	}
 	
 	onBooking(meeting) {
-		client({method: 'POST', path: '/api/bookings/make/' + meeting.description}).done(response => {
-			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
-				this.setState({
-					meetings: response.entity._embedded.meetings
+		if(meeting.meetingBooked){
+			alert('This meeting is already booked !');
+		}else{
+			client({method: 'POST', path: '/api/bookings/make/' + meeting.description}).done(response => {
+				client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+					this.setState({
+						meetings: response.entity._embedded.meetings
+					});
 				});
 			});
-		});
+		}
 	}
 	
 	onCancelling(meeting) {
@@ -219,13 +210,10 @@ class MeetingList extends React.Component{
 
 		return (
 			<div className="container">
-			<input ref="pageSize" defaultValue={this.props.pageSize} onInput={this.handleInput}/>
 				<table className="table table-striped">
 					<tbody>
 						<tr>
 							<th>Meeting Start Time</th>
-							<th>Is Meeting Bookable</th>
-							<th>Is Meeting Booked</th>
 						</tr>
 						{meetings}
 					</tbody>
@@ -252,19 +240,33 @@ class Meeting extends React.Component{
 	}
 	
 	render() {
-		return (
-			<tr>
-				<td>{this.props.meeting.meetingStartTime}</td>
-				<td>{this.props.meeting.meetingBookable.toString()}</td>
-				<td>{this.props.meeting.meetingBooked.toString()}</td>
-				<td>
-					<button onClick={this.handleBooking}>Book</button>
-				</td>
-				<td>
-				<button onClick={this.handleCancelling}>Cancel Booking</button>
-			</td>
-			</tr>
-		)
+		
+		if(this.props.meeting.meetingBookable){
+			return (
+					<tr>
+						<td>{this.props.meeting.meetingStartTime}</td>
+						<td>
+							<button onClick={this.handleBooking}>Book</button>
+						</td>
+						<td>
+						<button onClick={this.handleCancelling}>Cancel Booking</button>
+					</td>
+					</tr>
+				)
+		}else{
+			return (
+					<tr>
+						<td>{this.props.meeting.meetingStartTime}</td>
+						<td>
+							<p>BOOKED</p>
+						</td>
+						<td>
+						<button onClick={this.handleCancelling}>Cancel Booking</button>
+					</td>
+					</tr>
+				)
+		}
+		
 	}
 }
 
