@@ -1,1 +1,1 @@
-"room-booking-webapp" 
+"Cola Day Room Booking Web App" 
