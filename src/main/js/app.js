@@ -2,9 +2,12 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+const when = require('when');
 const client = require('./client');
 
 const follow = require('./follow');
+
+var stompClient = require('./websocket-listener')
 
 const root = '/api';
 
@@ -12,51 +15,77 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], attributes: [], pageSize: 1, links: {}};
-		this.updatePageSize = this.updatePageSize.bind(this);
+		this.state = {rooms: [], attributes: [], page: 1, pageSize: 20, links: {}};
 		this.onNavigate = this.onNavigate.bind(this);
+	
 	}
 	
 	loadFromServer(pageSize) {
 		follow(client, root, [
-			{rel: 'rooms', params: {size: pageSize}}]
+				{rel: 'rooms', params: {size: pageSize}}]
 		).then(roomCollection => {
-			return client({
-				method: 'GET',
-				path: roomCollection.entity._links.profile.href,
-				headers: {'Accept': 'application/schema+json'}
-			}).then(schema => {
-				this.schema = schema.entity;
-				return roomCollection;
-			});
-		}).done(roomCollection => {
+				return client({
+					method: 'GET',
+					path: roomCollection.entity._links.profile.href,
+					headers: {'Accept': 'application/schema+json'}
+				}).then(schema => {
+					this.schema = schema.entity;
+					this.links = roomCollection.entity._links;
+					return roomCollection;
+				});
+		}).then(roomCollection => {
+			this.page = roomCollection.entity.page;
+			return roomCollection.entity._embedded.rooms.map(room =>
+					client({
+						method: 'GET',
+						path: room._links.self.href
+					})
+			);
+		}).then(roomPromises => {
+			return when.all(roomPromises);
+		}).done(rooms => {
 			this.setState({
-				rooms: roomCollection.entity._embedded.rooms,
+				page: this.page,
+				rooms: rooms,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: pageSize,
-				links: roomCollection.entity._links});
+				links: this.links
+			});
 		});
 	}
 	
 	onNavigate(navUri) {
-		client({method: 'GET', path: navUri}).done(roomCollection => {
+		client({
+			method: 'GET',
+			path: navUri
+		}).then(roomCollection => {
+			this.links = roomCollection.entity._links;
+			this.page = roomCollection.entity.page;
+
+			return roomCollection.entity._embedded.rooms.map(room =>
+					client({
+						method: 'GET',
+						path: room._links.self.href
+					})
+			);
+		}).then(roomPromises => {
+			return when.all(roomPromises);
+		}).done(rooms => {
 			this.setState({
-				rooms: roomCollection.entity._embedded.rooms,
-				attributes: this.state.attributes,
+				page: this.page,
+				rooms: rooms,
+				attributes: Object.keys(this.schema.properties),
 				pageSize: this.state.pageSize,
-				links: roomCollection.entity._links
+				links: this.links
 			});
 		});
 	}
-
-	updatePageSize(pageSize) {
-		if (pageSize !== this.state.pageSize) {
-			this.loadFromServer(pageSize);
-		}
-	}
+	
+	
 
 	componentDidMount() {
 		this.loadFromServer(this.state.pageSize);
+
 	}
 
 	render() {
@@ -64,9 +93,9 @@ class App extends React.Component {
 				<div>
 				<RoomList rooms={this.state.rooms}
 							  links={this.state.links}
+							  page={this.state.page}
 							  pageSize={this.state.pageSize}
-							  onNavigate={this.onNavigate}
-							  updatePageSize={this.updatePageSize}/>
+							  onNavigate={this.onNavigate}/>
 			</div>
 		)
 	}
@@ -104,8 +133,12 @@ class RoomList extends React.Component {
 	}
 	
 	render() {
+		
+		var pageInfo = this.props.page.hasOwnProperty("number") ?
+				<h3>Employees - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
+		
 		var rooms = this.props.rooms.map(room =>
-			<Room key={room._links.self.href} room={room} />
+			<Room key={room.entity._links.self.href} room={room} attributes={this.props.attributes} />
 		);
 
 		var navLinks = [];
@@ -147,45 +180,45 @@ class Room extends React.Component{
 		this.state = {meetings: []};
 		this.onBooking = this.onBooking.bind(this);
 		this.onCancelling = this.onCancelling.bind(this);
+		this.refreshCurrentPage = this.refreshCurrentPage.bind(this);
 	}
 	
 	onBooking(meeting) {
 		if(meeting.meetingBooked){
 			alert('This meeting is already booked !');
 		}else{
-			client({method: 'POST', path: '/api/bookings/make/' + meeting.description}).done(response => {
-				client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
-					this.setState({
-						meetings: response.entity._embedded.meetings
-					});
-				});
-			});
+			client({method: 'POST', path: '/api/bookings/make/' + meeting.description});
 		}
 	}
 	
 	onCancelling(meeting) {
-		client({method: 'PUT', path: '/api/bookings/cancel/' + meeting.description}).done(response => {
-			client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
-				this.setState({
-					meetings: response.entity._embedded.meetings
-				});
-			});
-		});
+		client({method: 'PUT', path: '/api/bookings/cancel/' + meeting.description});
 	}
 	
-	componentDidMount() {
-		client({method: 'GET', path: this.props.room._links.meetings.href}).done(response => {
+	refreshCurrentPage(message) {
+		client({method: 'GET', path: this.props.room.entity._links.meetings.href}).done(response => {
 			this.setState({
 				meetings: response.entity._embedded.meetings
 			});
 		});
 	}
 	
+	componentDidMount() {
+		client({method: 'GET', path: this.props.room.entity._links.meetings.href}).done(response => {
+			this.setState({
+				meetings: response.entity._embedded.meetings
+			});
+		});
+		stompClient.register([
+			{route: '/topic/updateMeeting', callback: this.refreshCurrentPage}
+		]);
+	}
+	
 	render() {
 		return (
 			<div>
 				<tr>
-					<td>{this.props.room.roomName}</td>
+					<td>{this.props.room.entity.roomName}</td>
 				</tr>
 				<MeetingList meetings={this.state.meetings}
 						  		links={this.state.links}
@@ -271,7 +304,7 @@ class Meeting extends React.Component{
 }
 
 ReactDOM.render(
-	<App />,
+	<App loggedInUser = {document.getElementById('user').innerHTML} />,
 	document.getElementById('react')
 )
 
