@@ -37,12 +37,13 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-//		Employee admin1 = this.employees.save(new Employee("admin1", "admin1", "admin1", "Coke", "ROLE_MANAGER"));
-//		Employee admin2 = this.employees.save(new Employee("admin2", "admin2", "admin2", "Pepsi", "ROLE_MANAGER"));
-//		Employee user1 = this.employees.save(new Employee("user1", "user1", "user1", "Coke", "ROLE_USER"));
-//		Employee user2 = this.employees.save(new Employee("user2", "user2", "user2", "Pepsi", "ROLE_USER"));
+//		Employee admin = this.employees.save(new Employee("admin", "admin", "admin", "ROLE_MANAGER"));
+//		Employee user1 = this.employees.save(new Employee("u001", "admin", "Coke", "ROLE_MANAGER"));
+//		Employee user2 = this.employees.save(new Employee("u002", "admin", "Pepsi", "ROLE_MANAGER"));
+//		Employee user3 = this.employees.save(new Employee("u003", "123", "Coke", "ROLE_USER"));
+//		Employee user4 = this.employees.save(new Employee("u004", "456", "Pepsi", "ROLE_USER"));
 //
-//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin1",
+//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u001",
 //				"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
 //		
 //		roomService.addRoom("C01", rooms, meetings);
@@ -56,7 +57,7 @@ public class DatabaseLoader implements CommandLineRunner {
 //		roomService.addRoom("C09", rooms, meetings);
 //		roomService.addRoom("C10", rooms, meetings);
 //		
-//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin2",
+//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u002",
 //				"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
 //		
 //		roomService.addRoom("P01", rooms, meetings);

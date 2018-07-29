@@ -15,7 +15,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], attributes: [], page: 1, pageSize: 20, links: {}};
+		this.state = {rooms: [], attributes: [], page: 1, pageSize: 1, links: {}};
 		this.onNavigate = this.onNavigate.bind(this);
 	
 	}
@@ -156,11 +156,11 @@ class RoomList extends React.Component {
 		}
 
 		return (
-			<div className="container">
-				<table className="table table-striped">
+			<div class="table-wrapper">
+				<table class="table-responsive card-list-table">
 					<tbody>
 						<tr>
-							<th>Room Name</th>
+							<td>Room Name</td>
 						</tr>
 						{rooms}
 					</tbody>
@@ -242,11 +242,11 @@ class MeetingList extends React.Component{
 		);
 
 		return (
-			<div className="container">
-				<table className="table table-striped">
+			<div class="table-wrapper">
+				<table class="table-responsive card-list-table">
 					<tbody>
 						<tr>
-							<th>Meeting Start Time</th>
+							<td>Meeting Start Time</td>
 						</tr>
 						{meetings}
 					</tbody>
@@ -277,7 +277,7 @@ class Meeting extends React.Component{
 		if(this.props.meeting.meetingBookable){
 			return (
 					<tr>
-						<td>{this.props.meeting.meetingStartTime}</td>
+						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}</td>
 						<td>
 							<button onClick={this.handleBooking}>Book</button>
 						</td>
@@ -289,7 +289,7 @@ class Meeting extends React.Component{
 		}else{
 			return (
 					<tr>
-						<td>{this.props.meeting.meetingStartTime}</td>
+						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}</td>
 						<td>
 							<p>BOOKED</p>
 						</td>
@@ -304,7 +304,7 @@ class Meeting extends React.Component{
 }
 
 ReactDOM.render(
-	<App loggedInUser = {document.getElementById('user').innerHTML} />,
+	<App/>,
 	document.getElementById('react')
 )
 

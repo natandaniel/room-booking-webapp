@@ -25,7 +25,6 @@ public class EventHandler {
 
 	@HandleAfterSave
 	public void updateMeeting(Meeting meeting) {
-		System.out.println("Hello");
 		this.websocket.convertAndSend(WebSocketConfiguration.MESSAGE_PREFIX + "/updateMeeting", getPath(meeting));
 	}
 

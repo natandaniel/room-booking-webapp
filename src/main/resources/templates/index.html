@@ -3,23 +3,24 @@
 <head lang="en">
 <meta charset="UTF-8" />
 <title>Cola Day - Meeting Room Booking</title>
+<div th:replace="fragments/header :: header-css" />
 <link rel="stylesheet" href="/main.css" />
 </head>
-<body>
+<body class="large-screen">
 
-	<div>
-		Hello, <span id="user" th:text="${#authentication.name}">user</span>.
-		<form th:action="@{/logout}" method="post">
-			<input type="submit" value="Log Out" />
-		</form>
+	<div class="wrap">
+
+		<div id="header" th:replace="fragments/header :: header" />
+
+		<div id="react"></div>
+
+		<div id="footer" th:replace="fragments/footer :: footer" />
+
 	</div>
-
-	<div id="react"></div>
 
 	<script src="built/bundle.js"></script>
 	<link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-
+		
 </body>
 </html>
