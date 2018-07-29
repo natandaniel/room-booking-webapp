@@ -246,7 +246,7 @@ class MeetingList extends React.Component{
 				<table class="table-responsive card-list-table">
 					<tbody>
 						<tr>
-							<td>Meeting Start Time</td>
+							<td>Meeting Time Slot</td>
 						</tr>
 						{meetings}
 					</tbody>
@@ -277,7 +277,7 @@ class Meeting extends React.Component{
 		if(this.props.meeting.meetingBookable){
 			return (
 					<tr>
-						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}</td>
+						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
 						<td>
 							<button onClick={this.handleBooking}>Book</button>
 						</td>
@@ -289,7 +289,7 @@ class Meeting extends React.Component{
 		}else{
 			return (
 					<tr>
-						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}</td>
+					<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
 						<td>
 							<p>BOOKED</p>
 						</td>
