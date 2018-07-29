@@ -43,10 +43,7 @@ public class Employee implements Serializable {
 	private Long id;
 
 	@NotBlank
-	private String firstName;
-
-	@NotBlank
-	private String lastName;
+	private String name;
 
 	@JsonIgnore
 	private String password;
@@ -56,6 +53,7 @@ public class Employee implements Serializable {
 
 	private String[] roles;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	private List<Booking> bookings;
 
@@ -78,9 +76,8 @@ public class Employee implements Serializable {
 	public Employee() {
 	}
 
-	public Employee(String firstName, String lastName, String password, String companyName, String... roles) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public Employee(String name, String password, String companyName, String... roles) {
+		this.name = name;
 		this.setPassword(password);
 		this.companyName = companyName;
 		this.roles = roles;
