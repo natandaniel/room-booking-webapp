@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.natandanielapps.consensysbooking.exception.ResourceNotFoundException;
 import com.natandanielapps.consensysbooking.model.Employee;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
 
@@ -22,9 +23,10 @@ public class SpringDataJpaUserDetailsService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String lastName) throws UsernameNotFoundException {
-		Employee employee = this.employees.findByLastName(lastName);
-		return new User(employee.getLastName(), employee.getPassword(),
+	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+		Employee employee = this.employees.findByName(name)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", name));
+		return new User(employee.getName(), employee.getPassword(),
 				AuthorityUtils.createAuthorityList(employee.getRoles()));
 	}
 }
