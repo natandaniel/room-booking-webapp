@@ -50,7 +50,7 @@ public class BookingServiceImpl implements IBookingService {
 		log.info("description : " + description);
 
 		log.info("fetching employee...");
-		Employee employee = employees.findByName(authenticatedUserName)
+		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
 
 		log.info("fetching meeting...");
@@ -68,6 +68,7 @@ public class BookingServiceImpl implements IBookingService {
 
 			meeting.setMeetingBookable(false);
 			meeting.setMeetingBooked(true);
+			meeting.setCurrentUsername(employee.getUsername());
 
 			RestTemplate restTemplate = restTemplateFactory.getObject();
 			restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));
@@ -105,7 +106,7 @@ public class BookingServiceImpl implements IBookingService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 
-		Employee employee = employees.findByName(authenticatedUserName)
+		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
 
 		Meeting meeting = meetings.findByDescription(description)
@@ -132,6 +133,7 @@ public class BookingServiceImpl implements IBookingService {
 
 			meeting.setMeetingBookable(true);
 			meeting.setMeetingBooked(false);
+			meeting.setCurrentUsername(null);
 
 			RestTemplate restTemplate = restTemplateFactory.getObject();
 			restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));

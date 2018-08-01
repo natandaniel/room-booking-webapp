@@ -23,10 +23,10 @@ public class SpringDataJpaUserDetailsService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-		Employee employee = this.employees.findByName(name)
-				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", name));
-		return new User(employee.getName(), employee.getPassword(),
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Employee employee = this.employees.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", username));
+		return new User(employee.getUsername(), employee.getPassword(),
 				AuthorityUtils.createAuthorityList(employee.getRoles()));
 	}
 }

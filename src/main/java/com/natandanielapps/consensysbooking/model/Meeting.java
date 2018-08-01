@@ -46,6 +46,8 @@ public class Meeting implements Serializable {
 	private boolean isMeetingBookable;
 
 	private boolean isMeetingBooked;
+	
+	private String currentUsername;
 
 	@ManyToOne
 	@JoinColumn(name = "room_id")

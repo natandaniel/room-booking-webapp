@@ -15,7 +15,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], attributes: [], page: 1, pageSize: 1, links: {}};
+		this.state = {rooms: [], attributes: [], authenticatedUser:{}, page: 1, pageSize: 1, links: {}};
 		this.onNavigate = this.onNavigate.bind(this);
 	
 	}
@@ -54,6 +54,17 @@ class App extends React.Component {
 		});
 	}
 	
+	getAuthenticatedUser(){
+		client({
+			method: 'GET',
+			path: '/api/authenticatedUser'
+		}).done(response => {
+			this.setState({
+				authenticatedUser: response
+			});
+		});
+	}
+	
 	onNavigate(navUri) {
 		client({
 			method: 'GET',
@@ -85,6 +96,7 @@ class App extends React.Component {
 
 	componentDidMount() {
 		this.loadFromServer(this.state.pageSize);
+		this.getAuthenticatedUser();
 
 	}
 
@@ -95,7 +107,8 @@ class App extends React.Component {
 							  links={this.state.links}
 							  page={this.state.page}
 							  pageSize={this.state.pageSize}
-							  onNavigate={this.onNavigate}/>
+							  onNavigate={this.onNavigate}
+							authenticatedUser={this.state.authenticatedUser}/>
 			</div>
 		)
 	}
@@ -138,7 +151,7 @@ class RoomList extends React.Component {
 				<h3>Employees - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
 		
 		var rooms = this.props.rooms.map(room =>
-			<Room key={room.entity._links.self.href} room={room} attributes={this.props.attributes} />
+			<Room key={room.entity._links.self.href} room={room} attributes={this.props.attributes} authenticatedUser={this.props.authenticatedUser}/>
 		);
 
 		var navLinks = [];
@@ -224,6 +237,7 @@ class Room extends React.Component{
 						  		links={this.state.links}
 								onBooking={this.onBooking}
 								onCancelling={this.onCancelling}
+								authenticatedUser={this.props.authenticatedUser}
 						  />
 		    </div>
 		)
@@ -238,7 +252,7 @@ class MeetingList extends React.Component{
 	
 	render() {
 		var meetings = this.props.meetings.map(meeting =>
-			<Meeting key={meeting._links.self.href} meeting={meeting} onBooking={this.props.onBooking} onCancelling={this.props.onCancelling}/>
+			<Meeting key={meeting._links.self.href} meeting={meeting} onBooking={this.props.onBooking} onCancelling={this.props.onCancelling} authenticatedUser={this.props.authenticatedUser}/>
 		);
 
 		return (
@@ -274,19 +288,27 @@ class Meeting extends React.Component{
 	
 	render() {
 		
+		var meetingBookedByCurrentUser = this.props.authenticatedUser.entity.username === this.props.meeting.currentUsername;
+
+		console.log(this.props.meeting);
+		console.log(this.props.authenticatedUser.entity);
+		
 		if(this.props.meeting.meetingBookable){
+			
+			console.log(this.props.authenticatedUser.entity);
+			console.log("heyyeyey");
+			
 			return (
 					<tr>
 						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
-						<td>
-							<button onClick={this.handleBooking}>Book</button>
-						</td>
-						<td>
-						<button onClick={this.handleCancelling}>Cancel Booking</button>
-					</td>
+						<td> <button onClick={this.handleBooking}>Book</button> </td>
 					</tr>
 				)
-		}else{
+		}else if(meetingBookedByCurrentUser){
+			
+			console.log(this.props.authenticatedUser.entity);
+			console.log("2eme if");
+			
 			return (
 					<tr>
 					<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
@@ -298,8 +320,21 @@ class Meeting extends React.Component{
 					</td>
 					</tr>
 				)
+		}else{
+			
+			console.log(this.props.authenticatedUser.entity);
+			console.log("3eme if");
+			
+			return (
+					<tr>
+					<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
+						<td>
+							<p>BOOKED</p>
+						</td>
+					
+					</tr>
+				)
 		}
-		
 	}
 }
 

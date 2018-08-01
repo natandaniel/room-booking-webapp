@@ -43,7 +43,7 @@ public class Employee implements Serializable {
 	private Long id;
 
 	@NotBlank
-	private String name;
+	private String username;
 
 	@JsonIgnore
 	private String password;
@@ -76,8 +76,8 @@ public class Employee implements Serializable {
 	public Employee() {
 	}
 
-	public Employee(String name, String password, String companyName, String... roles) {
-		this.name = name;
+	public Employee(String username, String password, String companyName, String... roles) {
+		this.username = username;
 		this.setPassword(password);
 		this.companyName = companyName;
 		this.roles = roles;
