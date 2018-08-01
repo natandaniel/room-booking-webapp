@@ -60,7 +60,7 @@ class App extends React.Component {
 			path: '/api/authenticatedUser'
 		}).done(response => {
 			this.setState({
-				authenticatedUser: response
+				authenticatedUser: response.entity
 			});
 		});
 	}
@@ -200,12 +200,18 @@ class Room extends React.Component{
 		if(meeting.meetingBooked){
 			alert('This meeting is already booked !');
 		}else{
-			client({method: 'POST', path: '/api/bookings/make/' + meeting.description});
+			var meetingUrl = meeting._links.self.href;
+			var meetingId = meetingUrl.substr(meetingUrl.lastIndexOf("/")+1, meetingUrl.length);
+			console.log(meetingId);
+			client({method: 'POST', path: '/api/bookings/make/' + meetingId});
 		}
 	}
 	
 	onCancelling(meeting) {
-		client({method: 'PUT', path: '/api/bookings/cancel/' + meeting.description});
+		var meetingUrl = meeting._links.self.href;
+		var meetingId = meetingUrl.substr(meetingUrl.lastIndexOf("/")+1, meetingUrl.length);
+		console.log(meetingId);
+		client({method: 'PUT', path: '/api/bookings/cancel/' + meetingId});
 	}
 	
 	refreshCurrentPage(message) {
@@ -288,15 +294,9 @@ class Meeting extends React.Component{
 	
 	render() {
 		
-		var meetingBookedByCurrentUser = this.props.authenticatedUser.entity.username === this.props.meeting.currentUsername;
-
-		console.log(this.props.meeting);
-		console.log(this.props.authenticatedUser.entity);
+		var meetingBookedByCurrentUser = this.props.authenticatedUser.username === this.props.meeting.currentUsername;
 		
 		if(this.props.meeting.meetingBookable){
-			
-			console.log(this.props.authenticatedUser.entity);
-			console.log("heyyeyey");
 			
 			return (
 					<tr>
@@ -305,9 +305,6 @@ class Meeting extends React.Component{
 					</tr>
 				)
 		}else if(meetingBookedByCurrentUser){
-			
-			console.log(this.props.authenticatedUser.entity);
-			console.log("2eme if");
 			
 			return (
 					<tr>
@@ -321,9 +318,6 @@ class Meeting extends React.Component{
 					</tr>
 				)
 		}else{
-			
-			console.log(this.props.authenticatedUser.entity);
-			console.log("3eme if");
 			
 			return (
 					<tr>

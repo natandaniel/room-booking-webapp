@@ -41,21 +41,20 @@ public class BookingServiceImpl implements IBookingService {
 	EmployeeRepository employees;
 
 	@Override
-	public String makeBooking(String description) throws Exception {
+	public String makeBooking(String meetingId) throws Exception {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 
 		log.info("user : " + authenticatedUserName + " is authenticated");
-		log.info("description : " + description);
+		log.info("meetingId : " + meetingId);
+
+		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
+				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
 
 		log.info("fetching employee...");
 		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
-
-		log.info("fetching meeting...");
-		Meeting meeting = meetings.findByDescription(description)
-				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "description", description));
 
 		if (meeting.isMeetingBookable()) {
 
@@ -72,14 +71,11 @@ public class BookingServiceImpl implements IBookingService {
 
 			RestTemplate restTemplate = restTemplateFactory.getObject();
 			restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));
-
-			String url = "http://localhost:8080/api/meetings/" + meeting.getId();
-
+			String url = "http://localhost:8080/api/meetings/" + meetingId;
 			HttpHeaders httpHeaders = restTemplate.headForHeaders(url);
+			HttpEntity<Meeting> requestUpdate = new HttpEntity<>(meeting, httpHeaders);
 
 			log.info("updating meeting...");
-
-			HttpEntity<Meeting> requestUpdate = new HttpEntity<>(meeting, httpHeaders);
 
 			try {
 				restTemplate.exchange(url, HttpMethod.PUT, requestUpdate, Void.class);
@@ -99,18 +95,21 @@ public class BookingServiceImpl implements IBookingService {
 	}
 
 	@Override
-	public String cancelBooking(String description) throws Exception {
+	public String cancelBooking(String meetingId) throws Exception {
 
 		Booking bookingToCancel = null;
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
+		
+		log.info("user : " + authenticatedUserName + " is authenticated");
+		log.info("meeting id : " + meetingId);
 
+		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
+				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
+		
 		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
-
-		Meeting meeting = meetings.findByDescription(description)
-				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "description", description));
 
 		List<Booking> employeeBookings = employee.getBookings();
 
@@ -134,14 +133,11 @@ public class BookingServiceImpl implements IBookingService {
 			meeting.setMeetingBookable(true);
 			meeting.setMeetingBooked(false);
 			meeting.setCurrentUsername(null);
-
+			
 			RestTemplate restTemplate = restTemplateFactory.getObject();
 			restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));
-
-			String url = "http://localhost:8080/api/meetings/" + meeting.getId();
-
+			String url = "http://localhost:8080/api/meetings/" + meetingId;
 			HttpHeaders httpHeaders = restTemplate.headForHeaders(url);
-
 			HttpEntity<Meeting> requestUpdate = new HttpEntity<>(meeting, httpHeaders);
 
 			try {

@@ -23,15 +23,15 @@ public class BookingController {
 	@Autowired
 	IBookingService bookingService;
 
-	@PostMapping("/make/{description}")
-	public ResponseEntity<String> makeBooking(@PathVariable(value = "description") String description) {
+	@PostMapping("/make/{meetingId}")
+	public ResponseEntity<String> makeBooking(@PathVariable(value = "meetingId") String meetingId) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 
 		String message = "";
 		try {
-			message = bookingService.makeBooking(description);
+			message = bookingService.makeBooking(meetingId);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<String>("failed to execute request", headers, HttpStatus.BAD_REQUEST);
@@ -41,8 +41,8 @@ public class BookingController {
 
 	}
 
-	@PutMapping("/cancel/{description}")
-	public ResponseEntity<String> cancelBooking(@PathVariable(value = "description") String description) {
+	@PutMapping("/cancel/{meetingId}")
+	public ResponseEntity<String> cancelBooking(@PathVariable(value = "meetingId") String meetingId) {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
@@ -50,7 +50,7 @@ public class BookingController {
 		String message = "";
 		
 		try {
-			message = bookingService.cancelBooking(description);
+			message = bookingService.cancelBooking(meetingId);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<String>("failed to execute request", headers, HttpStatus.BAD_REQUEST);
