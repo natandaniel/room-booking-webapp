@@ -3,6 +3,7 @@ package com.natandanielapps.consensysbooking.services.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -35,12 +36,12 @@ public class Booking implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "employee_id")
 	@JsonIgnore
 	private Employee employee;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "meeting_id")
 	@JsonIgnore
 	private Meeting meeting;

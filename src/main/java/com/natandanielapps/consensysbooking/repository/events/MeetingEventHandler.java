@@ -42,7 +42,6 @@ public class MeetingEventHandler {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 		
-		log.info("fetching employee...");
 		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
 		

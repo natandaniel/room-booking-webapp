@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.services.infrastructure;
+package com.natandanielapps.consensysbooking.services.infrastructure.tools;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.AuthCache;
