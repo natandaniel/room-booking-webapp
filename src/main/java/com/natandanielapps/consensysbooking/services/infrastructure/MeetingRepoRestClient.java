@@ -34,6 +34,7 @@ public class MeetingRepoRestClient {
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		httpHeaders.add("Content-Type", "application/json");
 
 		HttpEntity<Meeting> meetingHttpEntity = new HttpEntity<>(meetingToUpdate, httpHeaders);
 
