@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.exception;
+package com.natandanielapps.consensysbooking.services.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

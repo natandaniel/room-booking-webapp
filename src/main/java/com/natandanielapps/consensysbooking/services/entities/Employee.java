@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.model;
+package com.natandanielapps.consensysbooking.services.entities;
 
 import java.io.Serializable;
 import java.util.Date;

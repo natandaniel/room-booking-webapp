@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.service;
+package com.natandanielapps.consensysbooking.services.business;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -6,10 +6,10 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
-import com.natandanielapps.consensysbooking.model.Meeting;
-import com.natandanielapps.consensysbooking.model.Room;
 import com.natandanielapps.consensysbooking.repository.MeetingRepository;
 import com.natandanielapps.consensysbooking.repository.RoomRepository;
+import com.natandanielapps.consensysbooking.services.entities.Meeting;
+import com.natandanielapps.consensysbooking.services.entities.Room;
 
 @Service
 public class RoomServiceImpl implements IRoomService {

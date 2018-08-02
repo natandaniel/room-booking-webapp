@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.data;
+package com.natandanielapps.consensysbooking.repository.dummydata;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -7,11 +7,11 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.natandanielapps.consensysbooking.model.Employee;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
 import com.natandanielapps.consensysbooking.repository.MeetingRepository;
 import com.natandanielapps.consensysbooking.repository.RoomRepository;
-import com.natandanielapps.consensysbooking.service.IRoomService;
+import com.natandanielapps.consensysbooking.services.business.IRoomService;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {

@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.service;
+package com.natandanielapps.consensysbooking.services.business;
 
 import java.util.List;
 
@@ -14,14 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.natandanielapps.consensysbooking.exception.ResourceNotFoundException;
-import com.natandanielapps.consensysbooking.model.Booking;
-import com.natandanielapps.consensysbooking.model.Employee;
-import com.natandanielapps.consensysbooking.model.Meeting;
 import com.natandanielapps.consensysbooking.repository.BookingRepository;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
 import com.natandanielapps.consensysbooking.repository.MeetingRepository;
-import com.natandanielapps.consensysbooking.rest.RestTemplateFactory;
+import com.natandanielapps.consensysbooking.services.entities.Booking;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
+import com.natandanielapps.consensysbooking.services.entities.Meeting;
+import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
+import com.natandanielapps.consensysbooking.services.infrastructure.RestTemplateFactory;
 
 @Service
 public class BookingServiceImpl implements IBookingService {

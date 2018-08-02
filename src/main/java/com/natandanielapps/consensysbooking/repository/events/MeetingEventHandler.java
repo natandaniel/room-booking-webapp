@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.events;
+package com.natandanielapps.consensysbooking.repository.events;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,14 +11,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.natandanielapps.consensysbooking.exception.ResourceNotFoundException;
-import com.natandanielapps.consensysbooking.model.Employee;
-import com.natandanielapps.consensysbooking.model.Meeting;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
+import com.natandanielapps.consensysbooking.services.entities.Meeting;
+import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
+import com.natandanielapps.consensysbooking.web.websockets.WebSocketConfiguration;
 
 @Component
 @RepositoryEventHandler(Meeting.class)
-public class EventHandler {
+public class MeetingEventHandler {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -30,7 +31,7 @@ public class EventHandler {
 	EmployeeRepository employees;
 
 	@Autowired
-	public EventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
+	public MeetingEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
 		this.websocket = websocket;
 		this.entityLinks = entityLinks;
 	}

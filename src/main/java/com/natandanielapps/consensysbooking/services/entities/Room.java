@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.model;
+package com.natandanielapps.consensysbooking.services.entities;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,8 +11,6 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -30,31 +28,20 @@ import lombok.Data;
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "meetings")
+@Table(name = "rooms")
 @EntityListeners(AuditingEntityListener.class)
-public class Meeting implements Serializable {
+public class Room implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date meetingStartTime;
+	@NotBlank
+	private String roomName;
 
-	private boolean isMeetingBookable;
-
-	private boolean isMeetingBooked;
-	
-	private String currentUsername;
-
-	@ManyToOne
-	@JoinColumn(name = "room_id")
+	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	@JsonIgnore
-	private Room room;
-
-	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Booking> bookings;
+	private List<Meeting> meetings;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -68,15 +55,11 @@ public class Meeting implements Serializable {
 	@JsonIgnore
 	private Date updatedAt;
 
-	public Meeting() {
-
+	public Room() {
 	}
-
-	public Meeting(@NotBlank Date meetingStartTime, @NotBlank boolean isMeetingBookable,
-			@NotBlank boolean isMeetingBooked, @NotBlank Room room) {
-		this.meetingStartTime = meetingStartTime;
-		this.isMeetingBookable = isMeetingBookable;
-		this.isMeetingBooked = isMeetingBooked;
-		this.room = room;
+	
+	public Room(String roomName, List<Meeting> meetings) {
+		this.roomName = roomName;
+		this.meetings = meetings;
 	}
 }

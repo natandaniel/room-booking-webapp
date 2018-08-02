@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.security;
+package com.natandanielapps.consensysbooking.web.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.natandanielapps.consensysbooking.exception.ResourceNotFoundException;
-import com.natandanielapps.consensysbooking.model.Employee;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
+import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 
 @Component
 public class SpringDataJpaUserDetailsService implements UserDetailsService {

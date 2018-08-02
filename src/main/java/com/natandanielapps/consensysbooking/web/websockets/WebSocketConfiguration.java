@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.events;
+package com.natandanielapps.consensysbooking.web.websockets;
 
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration extends AbstractWebSocketMessageBrokerConfigurer   {
 
-	static final String MESSAGE_PREFIX = "/topic";
+	public static final String MESSAGE_PREFIX = "/topic";
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {

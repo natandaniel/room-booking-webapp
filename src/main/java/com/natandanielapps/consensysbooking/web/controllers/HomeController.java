@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.controller;
+package com.natandanielapps.consensysbooking.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.natandanielapps.consensysbooking.exception.ResourceNotFoundException;
-import com.natandanielapps.consensysbooking.model.Employee;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
+import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 
 @Controller
 public class HomeController {

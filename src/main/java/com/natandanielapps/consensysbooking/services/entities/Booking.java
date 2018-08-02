@@ -1,17 +1,16 @@
-package com.natandanielapps.consensysbooking.model;
+package com.natandanielapps.consensysbooking.services.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,20 +27,25 @@ import lombok.Data;
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "rooms")
+@Table(name = "bookings")
 @EntityListeners(AuditingEntityListener.class)
-public class Room implements Serializable {
+public class Booking implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	private String roomName;
-
-	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
 	@JsonIgnore
-	private List<Meeting> meetings;
+	private Employee employee;
+
+	@ManyToOne
+	@JoinColumn(name = "meeting_id")
+	@JsonIgnore
+	private Meeting meeting;
+
+	private boolean isCancelled;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -55,11 +59,13 @@ public class Room implements Serializable {
 	@JsonIgnore
 	private Date updatedAt;
 
-	public Room() {
+	public Booking() {
+
 	}
-	
-	public Room(String roomName, List<Meeting> meetings) {
-		this.roomName = roomName;
-		this.meetings = meetings;
+
+	public Booking(@NotBlank Employee employee, @NotBlank Meeting meeting) {
+		this.employee = employee;
+		this.meeting = meeting;
+		this.isCancelled = false;
 	}
 }

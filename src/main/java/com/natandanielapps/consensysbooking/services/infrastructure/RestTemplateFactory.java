@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.rest;
+package com.natandanielapps.consensysbooking.services.infrastructure;
 
 import org.apache.http.HttpHost;
 import org.springframework.beans.factory.FactoryBean;

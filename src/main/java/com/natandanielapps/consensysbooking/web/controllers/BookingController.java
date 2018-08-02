@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.controller;
+package com.natandanielapps.consensysbooking.web.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.natandanielapps.consensysbooking.service.IBookingService;
+import com.natandanielapps.consensysbooking.services.business.IBookingService;
 
 @RestController
 @RequestMapping("/api/bookings")

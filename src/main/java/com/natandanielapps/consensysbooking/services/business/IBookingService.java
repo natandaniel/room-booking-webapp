@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.service;
+package com.natandanielapps.consensysbooking.services.business;
 
 public interface IBookingService {
 

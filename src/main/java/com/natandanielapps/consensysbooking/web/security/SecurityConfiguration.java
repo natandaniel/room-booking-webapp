@@ -1,4 +1,4 @@
-package com.natandanielapps.consensysbooking.security;
+package com.natandanielapps.consensysbooking.web.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
-import com.natandanielapps.consensysbooking.model.Employee;
+import com.natandanielapps.consensysbooking.services.entities.Employee;
 
 @Configuration
 @EnableWebSecurity
