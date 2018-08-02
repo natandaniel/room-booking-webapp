@@ -5,15 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.natandanielapps.consensysbooking.repository.BookingRepository;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
@@ -51,34 +46,32 @@ public class BookingServiceImpl implements IBookingService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 
-		log.info("user : " + authenticatedUserName + " is authenticated");
-		log.info("meetingId : " + meetingId);
+		log.info("makeBooking - meetingId : " + meetingId + " employee : " + authenticatedUserName);
 
-		ResponseEntity<Meeting> meetingEntity = meetingRepoRestClient.getMeeting(meetingId);
-		Meeting meeting = meetingEntity.getBody();
+		log.info("getting meeting...");
+		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
+				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
 
-		log.info("fetching employee...");
+		log.info("getting employee...");
 		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
 
 		if (meeting.isMeetingBookable()) {
 
 			log.info("meeting is bookable");
+			log.info("making booking ...");
 
 			Booking booking = new Booking(employee, meeting);
 			bookings.save(booking);
 
 			log.info("booking made");
+			log.info("updating meeting details...");
 
 			meeting.setMeetingBookable(false);
 			meeting.setMeetingBooked(true);
 			meeting.setCurrentUsername(employee.getUsername());
 
-			log.info("updating meeting...");
-
 			ResponseEntity<Meeting> updatedMeetingEntity = meetingRepoRestClient.updateMeeting(meetingId, meeting);
-
-			log.info("meeting updated");
 
 			return "booking made";
 
@@ -90,24 +83,28 @@ public class BookingServiceImpl implements IBookingService {
 	@Override
 	public String cancelBooking(String meetingId) throws Exception {
 
-		Booking bookingToCancel = null;
-
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 
-		log.info("user : " + authenticatedUserName + " is authenticated");
-		log.info("meeting id : " + meetingId);
+		log.info("cancelBooking - meetingId : " + meetingId + " employee : " + authenticatedUserName);
 
-		ResponseEntity<Meeting> meetingEntity = meetingRepoRestClient.getMeeting(meetingId);
-		Meeting meeting = meetingEntity.getBody();
+		Booking bookingToCancel = null;
 
+		log.info("getting meeting...");
+		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
+				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
+
+		log.info("getting employee...");
 		Employee employee = employees.findByUsername(authenticatedUserName)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
 
+		log.info("getting employee's bookings record...");
 		List<Booking> employeeBookings = employee.getBookings();
 
+		log.info("checking if employee has an active booking for this meeting ...");
 		for (Booking booking : employeeBookings) {
 			if (booking.getMeeting() == meeting && !booking.isCancelled()) {
+				log.info("active booking found");
 				bookingToCancel = booking;
 				break;
 			}
@@ -115,13 +112,12 @@ public class BookingServiceImpl implements IBookingService {
 
 		if (bookingToCancel != null && !bookingToCancel.isCancelled()) {
 
-			Long bookingToCancelId = bookingToCancel.getId();
+			log.info("cancelling booking...");
+			bookingToCancel.setCancelled(true);
+			bookings.save(bookingToCancel);
 
-			Booking booking = bookings.findById(bookingToCancel.getId())
-					.orElseThrow(() -> new ResourceNotFoundException("Booking", "id", bookingToCancelId));
-
-			booking.setCancelled(true);
-			bookings.save(booking);
+			log.info("booking cancelled");
+			log.info("updating meeting details...");
 
 			meeting.setMeetingBookable(true);
 			meeting.setMeetingBooked(false);
@@ -132,6 +128,7 @@ public class BookingServiceImpl implements IBookingService {
 			return "booking cancelled";
 
 		} else {
+			log.info("no active booking found - no booking to cancel");
 			return "no booking to cancel";
 		}
 	}

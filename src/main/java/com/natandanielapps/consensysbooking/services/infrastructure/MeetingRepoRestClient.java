@@ -28,22 +28,6 @@ public class MeetingRepoRestClient {
 
 	private String meetingRepoUrl = "http://localhost:8080/api/meetings/";
 
-	public ResponseEntity<Meeting> getMeeting(String meetingId) throws RestClientException {
-		
-		log.info("getting meeting " + meetingId);
-
-		RestTemplate restTemplate = restTemplateFactory.getObject();
-		restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));
-
-		ResponseEntity<Meeting> meetingEntity = restTemplate.getForEntity(meetingRepoUrl + meetingId, Meeting.class);
-
-		log.info("meeting fetched");
-		log.info("meeting : " + meetingEntity.getBody().toString());
-
-		return meetingEntity;
-
-	}
-
 	public ResponseEntity<Meeting> updateMeeting(String meetingId, Meeting meetingToUpdate) throws RestClientException {
 		
 		log.info("updating meeting " + meetingId);
