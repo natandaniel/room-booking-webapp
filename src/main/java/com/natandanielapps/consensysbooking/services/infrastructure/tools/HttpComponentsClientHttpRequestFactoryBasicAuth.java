@@ -12,6 +12,10 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import com.sun.org.apache.xerces.internal.util.URI;
 
+/**
+ * Used to add authentication in HTTP calls.
+ * 
+ */
 public class HttpComponentsClientHttpRequestFactoryBasicAuth 
   extends HttpComponentsClientHttpRequestFactory {
  

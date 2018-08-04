@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import com.natandanielapps.consensysbooking.repository.BookingRepository;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
@@ -41,7 +40,7 @@ public class BookingServiceImpl implements IBookingService {
 	MeetingRepoRestClient meetingRepoRestClient;
 
 	@Override
-	public BookingDTO makeBooking(String meetingId) throws ResourceNotFoundException, RestClientException {
+	public BookingDTO makeBooking(String meetingId) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
@@ -49,6 +48,7 @@ public class BookingServiceImpl implements IBookingService {
 		log.info("makeBooking - meetingId : " + meetingId + " - authenticated user : " + authenticatedUserName);
 
 		log.info("getting meeting ...");
+
 		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
 				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
 
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements IBookingService {
 	}
 
 	@Override
-	public BookingDTO cancelBooking(String meetingId) throws ResourceNotFoundException, RestClientException {
+	public BookingDTO cancelBooking(String meetingId) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();

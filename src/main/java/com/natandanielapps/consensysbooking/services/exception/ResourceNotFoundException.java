@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Exception thrown when resource not found in database.
+ *
+ */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("serial")
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {

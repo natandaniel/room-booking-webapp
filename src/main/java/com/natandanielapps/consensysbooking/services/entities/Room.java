@@ -25,6 +25,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
+/**
+ * A room entity.
+ *
+ */
 @SuppressWarnings("serial")
 @Data
 @Entity

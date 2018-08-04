@@ -28,6 +28,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * An employee entity.
+ *
+ */
 @SuppressWarnings("serial")
 @Data
 @ToString(exclude = "password")

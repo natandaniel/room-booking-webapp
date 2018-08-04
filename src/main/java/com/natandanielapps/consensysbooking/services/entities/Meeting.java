@@ -27,6 +27,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
+/**
+ * A meeting entity.
+ *
+ */
 @SuppressWarnings("serial")
 @Data
 @Entity

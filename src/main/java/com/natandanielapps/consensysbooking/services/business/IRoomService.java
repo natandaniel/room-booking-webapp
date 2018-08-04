@@ -1,10 +1,17 @@
 package com.natandanielapps.consensysbooking.services.business;
 
-import com.natandanielapps.consensysbooking.repository.MeetingRepository;
-import com.natandanielapps.consensysbooking.repository.RoomRepository;
 import com.natandanielapps.consensysbooking.services.entities.Room;
 
+/**
+ * Service to manage rooms.
+ *
+ */
 public interface IRoomService {
 
-	Room addRoom(String roomName, RoomRepository rooms, MeetingRepository meetings);
+	/**
+	 * Adds a room in the system.
+	 * @param roomName room name
+	 * @return added {@link Room}
+	 */
+	void addRoom(String roomName);
 }

@@ -19,7 +19,7 @@ import com.natandanielapps.consensysbooking.services.infrastructure.tools.RestTe
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * REST client to update instances of {@link Meeting} in the database.
+ * REST client to update instances of {@link Meeting} in database.
  *
  */
 @Service

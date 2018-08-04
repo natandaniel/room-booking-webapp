@@ -12,6 +12,10 @@ import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
 import com.natandanielapps.consensysbooking.services.entities.Employee;
 import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 
+/**
+ * API user authentication.
+ *
+ */
 @Component
 public class SpringDataJpaUserDetailsService implements UserDetailsService {
 

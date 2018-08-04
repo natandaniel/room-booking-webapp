@@ -12,65 +12,80 @@ import com.natandanielapps.consensysbooking.repository.MeetingRepository;
 import com.natandanielapps.consensysbooking.repository.RoomRepository;
 import com.natandanielapps.consensysbooking.services.business.IRoomService;
 import com.natandanielapps.consensysbooking.services.entities.Employee;
+import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 
+/**
+ * Used for testing, loads database with two employees and 20 rooms.
+ */
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
 	@Autowired
-	private final RoomRepository rooms;
-	
-	@Autowired
-	private final MeetingRepository meetings;
-	
-	@Autowired
 	private final EmployeeRepository employees;
-	
+
 	public DatabaseLoader(RoomRepository rooms, MeetingRepository meetings, EmployeeRepository employees) {
-		this.rooms = rooms;
-		this.meetings = meetings;
 		this.employees = employees;
 	}
-	
+
 	@Autowired
 	IRoomService roomService;
 
 	@Override
 	public void run(String... args) throws Exception {
 
-//		Employee admin = this.employees.save(new Employee("admin", "admin", "admin", "ROLE_MANAGER"));
-//		Employee user1 = this.employees.save(new Employee("u001", "admin", "Coke", "ROLE_MANAGER"));
-//		Employee user2 = this.employees.save(new Employee("u002", "admin", "Pepsi", "ROLE_MANAGER"));
-//		Employee user3 = this.employees.save(new Employee("u003", "123", "Coke", "ROLE_USER"));
-//		Employee user4 = this.employees.save(new Employee("u004", "456", "Pepsi", "ROLE_USER"));
-//
-//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u001",
-//				"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-//		
-//		roomService.addRoom("C01", rooms, meetings);
-//		roomService.addRoom("C02", rooms, meetings);
-//		roomService.addRoom("C03", rooms, meetings);
-//		roomService.addRoom("C04", rooms, meetings);
-//		roomService.addRoom("C05", rooms, meetings);
-//		roomService.addRoom("C06", rooms, meetings);
-//		roomService.addRoom("C07", rooms, meetings);
-//		roomService.addRoom("C08", rooms, meetings);
-//		roomService.addRoom("C09", rooms, meetings);
-//		roomService.addRoom("C10", rooms, meetings);
-//		
-//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u002",
-//				"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-//		
-//		roomService.addRoom("P01", rooms, meetings);
-//		roomService.addRoom("P02", rooms, meetings);
-//		roomService.addRoom("P03", rooms, meetings);
-//		roomService.addRoom("P04", rooms, meetings);
-//		roomService.addRoom("P05", rooms, meetings);
-//		roomService.addRoom("P06", rooms, meetings);
-//		roomService.addRoom("P07", rooms, meetings);
-//		roomService.addRoom("P08", rooms, meetings);
-//		roomService.addRoom("P09", rooms, meetings);
-//		roomService.addRoom("P10", rooms, meetings);
-//		
-//		SecurityContextHolder.clearContext();
+		try {
+
+			employees.findByUsername("u001")
+					.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", "u001"));
+
+		} catch (ResourceNotFoundException e) {
+
+			Employee u001 = new Employee("u001", "u001", "Coke", "ROLE_MANAGER");
+			employees.save(u001);
+
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u001",
+					"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+
+			roomService.addRoom("C01");
+			roomService.addRoom("C02");
+			roomService.addRoom("C03");
+			roomService.addRoom("C04");
+			roomService.addRoom("C05");
+			roomService.addRoom("C06");
+			roomService.addRoom("C07");
+			roomService.addRoom("C08");
+			roomService.addRoom("C09");
+			roomService.addRoom("C10");
+
+			SecurityContextHolder.clearContext();
+		}
+
+		try {
+
+			employees.findByUsername("u002")
+					.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", "u002"));
+
+		} catch (ResourceNotFoundException e) {
+
+			Employee u002 = new Employee("u002", "u002", "Pepsi", "ROLE_MANAGER");
+			employees.save(u002);
+
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u002",
+					"doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+
+			roomService.addRoom("P01");
+			roomService.addRoom("P02");
+			roomService.addRoom("P03");
+			roomService.addRoom("P04");
+			roomService.addRoom("P05");
+			roomService.addRoom("P06");
+			roomService.addRoom("P07");
+			roomService.addRoom("P08");
+			roomService.addRoom("P09");
+			roomService.addRoom("P10");
+
+			SecurityContextHolder.clearContext();
+		}
+
 	}
 }
