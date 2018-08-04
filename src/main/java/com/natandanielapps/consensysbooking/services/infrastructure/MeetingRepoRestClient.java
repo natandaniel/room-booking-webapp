@@ -2,8 +2,6 @@ package com.natandanielapps.consensysbooking.services.infrastructure;
 
 import java.util.Collections;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,18 +16,29 @@ import org.springframework.web.client.RestTemplate;
 import com.natandanielapps.consensysbooking.services.entities.Meeting;
 import com.natandanielapps.consensysbooking.services.infrastructure.tools.RestTemplateFactory;
 
-@Service
-public class MeetingRepoRestClient {
+import lombok.extern.slf4j.Slf4j;
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+/**
+ * REST client to update instances of {@link Meeting} in the database.
+ *
+ */
+@Service
+@Slf4j
+public class MeetingRepoRestClient {
 
 	@Autowired
 	RestTemplateFactory restTemplateFactory;
 
 	private String meetingRepoUrl = "http://localhost:8080/api/meetings/";
 
-	public ResponseEntity<Meeting> updateMeeting(String meetingId, Meeting meetingToUpdate) throws RestClientException {
-		
+	/**
+	 * Updates a {@link Meeting}
+	 * @param meetingId a {@link Meeting} identifier
+	 * @param meetingToUpdate instance of {@link Meeting} to update
+	 * @throws RestClientException
+	 */
+	public void updateMeeting(String meetingId, Meeting meetingToUpdate) throws RestClientException {
+
 		log.info("updating meeting " + meetingId);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -43,11 +52,8 @@ public class MeetingRepoRestClient {
 
 		ResponseEntity<Meeting> meetingEntity = restTemplate.exchange(meetingRepoUrl + meetingId, HttpMethod.PUT,
 				meetingHttpEntity, Meeting.class);
-		
+
 		log.info("meeting updated");
 		log.info("meeting : " + meetingEntity.getBody().toString());
-
-		return meetingEntity;
 	}
-
 }

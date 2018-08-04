@@ -2,13 +2,11 @@ package com.natandanielapps.consensysbooking.services.business;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import com.natandanielapps.consensysbooking.repository.BookingRepository;
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
@@ -19,11 +17,13 @@ import com.natandanielapps.consensysbooking.services.entities.Meeting;
 import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 import com.natandanielapps.consensysbooking.services.infrastructure.MeetingRepoRestClient;
 import com.natandanielapps.consensysbooking.services.infrastructure.tools.RestTemplateFactory;
+import com.natandanielapps.consensysbooking.web.dto.BookingDTO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class BookingServiceImpl implements IBookingService {
-
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	RestTemplateFactory restTemplateFactory;
@@ -41,14 +41,14 @@ public class BookingServiceImpl implements IBookingService {
 	MeetingRepoRestClient meetingRepoRestClient;
 
 	@Override
-	public String makeBooking(String meetingId) throws Exception {
+	public BookingDTO makeBooking(String meetingId) throws ResourceNotFoundException, RestClientException {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
 
-		log.info("makeBooking - meetingId : " + meetingId + " employee : " + authenticatedUserName);
+		log.info("makeBooking - meetingId : " + meetingId + " - authenticated user : " + authenticatedUserName);
 
-		log.info("getting meeting...");
+		log.info("getting meeting ...");
 		Meeting meeting = meetings.findById(Long.valueOf(meetingId))
 				.orElseThrow(() -> new ResourceNotFoundException("Meeting", "id", meetingId));
 
@@ -64,24 +64,25 @@ public class BookingServiceImpl implements IBookingService {
 			Booking booking = new Booking(employee, meeting);
 			bookings.save(booking);
 
-			log.info("booking made");
-			log.info("updating meeting details...");
+			log.info("booking made for employee " + employee.getUsername());
+			log.info("updating meeting details ...");
 
 			meeting.setMeetingBookable(false);
 			meeting.setMeetingBooked(true);
 			meeting.setCurrentUsername(employee.getUsername());
 
-			ResponseEntity<Meeting> updatedMeetingEntity = meetingRepoRestClient.updateMeeting(meetingId, meeting);
+			meetingRepoRestClient.updateMeeting(meetingId, meeting);
 
-			return "booking made";
+			return new BookingDTO(booking.getId(), employee.getUsername(), meeting.getId(), "CREATED");
 
 		} else {
-			return "meeting already booked";
+			return new BookingDTO(
+					"Meeting is already booked by another employee. Cannot book meeting for " + employee.getUsername());
 		}
 	}
 
 	@Override
-	public String cancelBooking(String meetingId) throws Exception {
+	public BookingDTO cancelBooking(String meetingId) throws ResourceNotFoundException, RestClientException {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String authenticatedUserName = authentication.getName();
@@ -123,13 +124,12 @@ public class BookingServiceImpl implements IBookingService {
 			meeting.setMeetingBooked(false);
 			meeting.setCurrentUsername(null);
 
-			ResponseEntity<Meeting> updatedMeetingEntity = meetingRepoRestClient.updateMeeting(meetingId, meeting);
+			meetingRepoRestClient.updateMeeting(meetingId, meeting);
 
-			return "booking cancelled";
+			return new BookingDTO(bookingToCancel.getId(), employee.getUsername(), meeting.getId(), "CANCELLED");
 
 		} else {
-			log.info("no active booking found - no booking to cancel");
-			return "no booking to cancel";
+			return new BookingDTO("No active booking was found for this meeting - no booking was cancelled");
 		}
 	}
 }
