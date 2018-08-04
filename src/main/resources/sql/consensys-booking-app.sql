@@ -10,8 +10,7 @@ DROP TABLE IF EXISTS `employees`;
 
 CREATE TABLE `employees` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `company_name` varchar(255) NOT NULL,
   `roles` tinyblob,
@@ -35,10 +34,12 @@ DROP TABLE IF EXISTS `meetings`;
 
 CREATE TABLE `meetings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
   `meeting_start_time` datetime NOT NULL,
   `is_meeting_bookable` bit(1) DEFAULT b'1',
   `is_meeting_booked` bit(0) DEFAULT b'0',
   `room_id` bigint(20) DEFAULT NULL,
+  `current_username` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -62,7 +63,7 @@ CREATE TABLE `bookings` (
   CONSTRAINT `FK_EMPLOYEE` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY `FK_MEETING_idx` (`meeting_id`),
   CONSTRAINT `FK_MEETING` FOREIGN KEY (`meeting_id`) REFERENCES `meetings` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
