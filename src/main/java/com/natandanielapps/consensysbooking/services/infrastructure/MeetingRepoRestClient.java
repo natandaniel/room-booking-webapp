@@ -48,7 +48,7 @@ public class MeetingRepoRestClient {
 		HttpEntity<Meeting> meetingHttpEntity = new HttpEntity<>(meetingToUpdate, httpHeaders);
 
 		RestTemplate restTemplate = restTemplateFactory.getObject();
-		restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("admin", "admin"));
+		restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("u000", "u000"));
 
 		ResponseEntity<Meeting> meetingEntity = restTemplate.exchange(meetingRepoUrl + meetingId, HttpMethod.PUT,
 				meetingHttpEntity, Meeting.class);

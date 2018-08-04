@@ -35,6 +35,17 @@ public class DatabaseLoader implements CommandLineRunner {
 
 		try {
 
+			employees.findByUsername("u000")
+					.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", "u000"));
+
+		} catch (ResourceNotFoundException e) {
+
+			Employee u000 = new Employee("u000", "u000", "CokePepsi", "ROLE_MANAGER");
+			employees.save(u000);
+		}
+
+		try {
+
 			employees.findByUsername("u001")
 					.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", "u001"));
 
