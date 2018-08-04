@@ -14,7 +14,7 @@ import com.natandanielapps.consensysbooking.web.websockets.WebSocketConfiguratio
 
 /**
  * Meeting repository event handler.
- * 
+ * 	
  *
  */
 @Component
@@ -26,7 +26,7 @@ public class MeetingEventHandler {
 	private final EntityLinks entityLinks;
 
 	@Autowired
-	EmployeeRepository employees;
+	EmployeeRepository meetings;
 
 	@Autowired
 	public MeetingEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
@@ -52,8 +52,8 @@ public class MeetingEventHandler {
 	 *
 	 * @param meeting
 	 */
-	private String getPath(Meeting employee) {
-		return this.entityLinks.linkForSingleResource(employee.getClass(), employee.getId()).toUri().getPath();
+	private String getPath(Meeting meeting) {
+		return this.entityLinks.linkForSingleResource(meeting.getClass(), meeting.getId()).toUri().getPath();
 	}
 
 }
