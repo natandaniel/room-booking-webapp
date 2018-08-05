@@ -42,7 +42,7 @@ public class BookingController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 
-		return new ResponseEntity<BookingDTO>(bookingService.makeBooking(meetingId), headers, HttpStatus.OK);
+		return new ResponseEntity<BookingDTO>(bookingService.makeBooking(meetingId), headers, HttpStatus.CREATED);
 
 	}
 

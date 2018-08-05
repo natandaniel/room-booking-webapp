@@ -15,7 +15,6 @@ import com.natandanielapps.consensysbooking.services.entities.Employee;
 import com.natandanielapps.consensysbooking.services.entities.Meeting;
 import com.natandanielapps.consensysbooking.services.exception.ResourceNotFoundException;
 import com.natandanielapps.consensysbooking.services.infrastructure.MeetingRepoRestClient;
-import com.natandanielapps.consensysbooking.services.infrastructure.tools.RestTemplateFactory;
 import com.natandanielapps.consensysbooking.web.dto.BookingDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class BookingServiceImpl implements IBookingService {
-
-	@Autowired
-	RestTemplateFactory restTemplateFactory;
 
 	@Autowired
 	BookingRepository bookings;
@@ -54,7 +50,7 @@ public class BookingServiceImpl implements IBookingService {
 
 		log.info("getting employee...");
 		Employee employee = employees.findByUsername(authenticatedUserName)
-				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUserName));
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "username", authenticatedUserName));
 
 		if (meeting.isMeetingBookable()) {
 
