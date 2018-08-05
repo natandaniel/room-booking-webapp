@@ -33,7 +33,7 @@ public class HomeController {
 	@GetMapping("/login")
 	public String login(Principal principal) {
 		if (principal == null) {
-			return "/login";
+			return "login";
 		} else {
 			return "user/index";
 		}
@@ -47,7 +47,7 @@ public class HomeController {
 	@GetMapping("/")
 	public String index(Principal principal) {
 		if (principal == null) {
-			return "/login";
+			return "login";
 		} else {
 			return "user/index";
 		}
@@ -70,7 +70,7 @@ public class HomeController {
 	 */
 	@GetMapping("/access-denied")
 	public String accessDenied() {
-		return "/error/access-denied";
+		return "error/access-denied";
 	}
 
 	/**
