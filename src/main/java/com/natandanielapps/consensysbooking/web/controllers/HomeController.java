@@ -31,8 +31,12 @@ public class HomeController {
 	 * @return login page view
 	 */
 	@GetMapping("/login")
-	public String login() {
-		return "/login";
+	public String login(Principal principal) {
+		if (principal == null) {
+			return "/login";
+		} else {
+			return "user/index";
+		}
 	}
 
 	/**
