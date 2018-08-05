@@ -41,6 +41,16 @@ public class HomeController {
 	public String login() {
 		return "/login";
 	}
+	
+	@GetMapping("/user")
+    public String userIndex() {
+        return "user/index";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "/error/access-denied";
+    }
 
 	/**
 	 * Gets the authenticated user's details.

@@ -15,7 +15,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {rooms: [], attributes: [], authenticatedUser:{}, page: 1, pageSize: 1, links: {}};
+		this.state = {rooms: [], attributes: [], authenticatedUser:{}, page: 1, pageSize: 3, links: {}};
 		this.onNavigate = this.onNavigate.bind(this);
 	
 	}
@@ -103,13 +103,8 @@ class App extends React.Component {
 	render() {
 		return (
 				<div>
-				<RoomList rooms={this.state.rooms}
-							  links={this.state.links}
-							  page={this.state.page}
-							  pageSize={this.state.pageSize}
-							  onNavigate={this.onNavigate}
-							authenticatedUser={this.state.authenticatedUser}/>
-			</div>
+					<RoomList rooms={this.state.rooms} links={this.state.links} page={this.state.page} pageSize={this.state.pageSize} onNavigate={this.onNavigate} authenticatedUser={this.state.authenticatedUser}/>
+				</div>
 		)
 	}
 }
@@ -148,7 +143,7 @@ class RoomList extends React.Component {
 	render() {
 		
 		var pageInfo = this.props.page.hasOwnProperty("number") ?
-				<h3>Employees - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
+				<h3>Rooms - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
 		
 		var rooms = this.props.rooms.map(room =>
 			<Room key={room.entity._links.self.href} room={room} attributes={this.props.attributes} authenticatedUser={this.props.authenticatedUser}/>
@@ -169,19 +164,13 @@ class RoomList extends React.Component {
 		}
 
 		return (
-			<div class="table-wrapper">
-				<table class="table-responsive card-list-table">
-					<tbody>
-						<tr>
-							<td>Room Name</td>
-						</tr>
-						{rooms}
-					</tbody>
-				</table>
 				<div>
-					{navLinks}
+					<div>
+						<p>{pageInfo}</p>
+						<p>{navLinks}</p>	
+					</div>
+					<div className="card-deck"> {rooms} </div>
 				</div>
-			</div>
 		)
 	}
 }
@@ -223,11 +212,12 @@ class Room extends React.Component{
 	}
 	
 	componentDidMount() {
-		client({method: 'GET', path: this.props.room.entity._links.meetings.href}).done(response => {
-			this.setState({
-				meetings: response.entity._embedded.meetings
-			});
-		});
+		 client({method: 'GET', path:
+			 this.props.room.entity._links.meetings.href}).done(response => {
+			 this.setState({
+			 meetings: response.entity._embedded.meetings
+			 });
+		 });
 		stompClient.register([
 			{route: '/topic/updateMeeting', callback: this.refreshCurrentPage}
 		]);
@@ -235,17 +225,17 @@ class Room extends React.Component{
 	
 	render() {
 		return (
-			<div>
-				<tr>
-					<td>{this.props.room.entity.roomName}</td>
-				</tr>
-				<MeetingList meetings={this.state.meetings}
-						  		links={this.state.links}
-								onBooking={this.onBooking}
-								onCancelling={this.onCancelling}
-								authenticatedUser={this.props.authenticatedUser}
-						  />
-		    </div>
+				  <div className="card border-primary mb-3">
+				  	<div className="card-header text-center">{this.props.room.entity.roomName}</div>
+				    <div className="card-body">
+				      <MeetingList 
+			    		meetings={this.state.meetings}
+				  		links={this.state.links}
+						onBooking={this.onBooking}
+						onCancelling={this.onCancelling}
+						authenticatedUser={this.props.authenticatedUser} />		
+				    </div>
+				  </div>
 		)
 	}
 }
@@ -261,18 +251,11 @@ class MeetingList extends React.Component{
 			<Meeting key={meeting._links.self.href} meeting={meeting} onBooking={this.props.onBooking} onCancelling={this.props.onCancelling} authenticatedUser={this.props.authenticatedUser}/>
 		);
 
-		return (
-			<div class="table-wrapper">
-				<table class="table-responsive card-list-table">
-					<tbody>
-						<tr>
-							<td>Meeting Time Slot</td>
-						</tr>
-						{meetings}
-					</tbody>
+		return (  
+				<table className="table table-striped">
+					<tbody>{meetings}</tbody>
 				</table>
-			</div>
-		)
+				)
 	}
 }
 
@@ -298,35 +281,62 @@ class Meeting extends React.Component{
 		
 		if(this.props.meeting.meetingBookable){
 			
-			return (
+			return (						
 					<tr>
-						<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
-						<td> <button onClick={this.handleBooking}>Book</button> </td>
+						<td>
+							<p>
+								{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}h - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}h 
+							</p>
+						</td>
+						<td>
+							<p>
+								<button type="button" className="btn btn-success btn-sm" onClick={this.handleBooking}> BOOK </button>
+							</p>
+						</td>
+						<td>
+							<p></p>
+						</td>
 					</tr>
 				)
 		}else if(meetingBookedByCurrentUser){
 			
 			return (
 					<tr>
-					<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
 						<td>
-							<p>BOOKED</p>
+							<p>
+								{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}h - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}h 
+							</p>
 						</td>
 						<td>
-						<button onClick={this.handleCancelling}>Cancel Booking</button>
-					</td>
+							<p>
+								<button type="button" className="btn btn-succes btn-sm"> BOOKED </button>
+							</p>
+						</td>
+						<td>
+							<p>
+								<button type="button" className="btn btn-danger btn-sm" onClick={this.handleCancelling}> CANCEL </button>
+							</p>
+						</td>
 					</tr>
 				)
 		}else{
 			
 			return (
 					<tr>
-					<td>{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()} - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}</td>
-						<td>
-							<p>BOOKED</p>
-						</td>
-					
-					</tr>
+					<td>
+						<p>
+							{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}h - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}h 
+						</p>
+					</td>
+					<td>
+						<p>
+							<button type="button" className="btn btn-succes btn-sm"> BOOKED </button>
+						</p>
+					</td>
+					<td>
+						<p></p>
+					</td>
+				</tr>
 				)
 		}
 	}

@@ -1,28 +1,25 @@
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:th="http://www.thymeleaf.org"
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-<head>
-</head>
 <body>
-<div th:fragment="footer">
+<th:block th:fragment="footer">
+    <footer>
+        <div class="container">
+            <p>
+                &copy; coladay.com
+                <span sec:authorize="isAuthenticated()" style="display: inline-block;">
+                    | Logged user: <span sec:authentication="name"></span> |
+                    Roles: <span sec:authentication="principal.authorities"></span> |
+                    <a th:href="@{/logout}">Sign Out</a>
+                </span>
+            </p>
+        </div>
+    </footer>
 
-    <div class="container">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/built/bundle.js}"></script>
 
-        <footer>
-        <!-- this is footer -->
-        © 2018 natan
-            <span sec:authorize="isAuthenticated()">
-                | Logged user: <span sec:authentication="name"></span> |
-                Roles: <span sec:authentication="principal.authorities"></span> |
-                <a th:href="@{/logout}">Sign Out</a>
-            </span>
-
-        <script type="text/javascript"
-                src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-        </footer>
-    </div>
-
-</div>
+</th:block>
 </body>
 </html>

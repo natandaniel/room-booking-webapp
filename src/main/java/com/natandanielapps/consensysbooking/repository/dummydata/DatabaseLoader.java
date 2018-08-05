@@ -40,7 +40,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
 		} catch (ResourceNotFoundException e) {
 
-			Employee u000 = new Employee("u000", "u000", "CokePepsi", "ROLE_MANAGER");
+			Employee u000 = new Employee("u000", "u000", "CokePepsi", "ROLE_MANAGER", "ROLE_USER");
 			employees.save(u000);
 		}
 
@@ -51,7 +51,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
 		} catch (ResourceNotFoundException e) {
 
-			Employee u001 = new Employee("u001", "u001", "Coke", "ROLE_MANAGER");
+			Employee u001 = new Employee("u001", "u001", "Coke", "ROLE_MANAGER", "ROLE_USER");
 			employees.save(u001);
 
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u001",
