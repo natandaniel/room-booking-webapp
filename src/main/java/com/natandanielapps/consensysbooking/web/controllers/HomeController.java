@@ -1,5 +1,7 @@
 package com.natandanielapps.consensysbooking.web.controllers;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,44 +27,55 @@ public class HomeController {
 
 	/**
 	 * Serves the login page.
+	 * 
 	 * @return login page view
 	 */
 	@GetMapping("/login")
 	public String login() {
 		return "/login";
 	}
-	
+
 	/**
 	 * Serves the login page.
+	 * 
 	 * @return home page view
 	 */
 	@GetMapping("/")
-    public String index() {
-        return "/login";
-    }
-	
+	public String index(Principal principal) {
+		if (principal == null) {
+			return "/login";
+		} else {
+			return "user/index";
+		}
+	}
+
 	/**
 	 * Serves the home page.
+	 * 
 	 * @return home page view
 	 */
 	@GetMapping("/user")
-    public String userIndex() {
-        return "user/index";
-    }
+	public String userIndex() {
+		return "user/index";
+	}
 
 	/**
 	 * Acces denied page
+	 * 
 	 * @return access denied vi
 	 */
-    @GetMapping("/access-denied")
-    public String accessDenied() {
-        return "/error/access-denied";
-    }
+	@GetMapping("/access-denied")
+	public String accessDenied() {
+		return "/error/access-denied";
+	}
 
 	/**
 	 * Gets the authenticated user's details.
-	 * @return instance of {@link Employee} containing the authenticated user's details
-	 * @throws ResourceNotFoundException exception thrown if user is not registered in system
+	 * 
+	 * @return instance of {@link Employee} containing the authenticated user's
+	 *         details
+	 * @throws ResourceNotFoundException
+	 *             exception thrown if user is not registered in system
 	 */
 	@GetMapping("/api/authenticatedUser")
 	public ResponseEntity<Employee> getAuthenticatedUser() throws ResourceNotFoundException {
@@ -74,7 +87,7 @@ public class HomeController {
 		String authenticatedUsername = authentication.getName();
 
 		Employee employee = employees.findByUsername(authenticatedUsername)
-					.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUsername));
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "name", authenticatedUsername));
 
 		return new ResponseEntity<Employee>(employee, headers, HttpStatus.OK);
 	}
