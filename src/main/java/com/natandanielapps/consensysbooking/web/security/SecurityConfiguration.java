@@ -35,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/", "/js/**", "/built/**", "/css/**", "/img/**", "/webjars/**")
 				.permitAll().antMatchers("/user/**").hasRole("USER").anyRequest().authenticated().and().formLogin()
-				.loginPage("/login").defaultSuccessUrl("/", true).permitAll().and().httpBasic().and().csrf()
+				.loginPage("/login").defaultSuccessUrl("/user/", true).permitAll().and().httpBasic().and().csrf()
 				.disable().logout().invalidateHttpSession(true).clearAuthentication(true)
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout")
 				.permitAll().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler);

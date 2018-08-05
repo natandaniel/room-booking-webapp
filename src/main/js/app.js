@@ -143,7 +143,7 @@ class RoomList extends React.Component {
 	render() {
 		
 		var pageInfo = this.props.page.hasOwnProperty("number") ?
-				<h3>Rooms - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
+				<p>Rooms - Page {this.props.page.number + 1} of {this.props.page.totalPages}</p> : null;
 		
 		var rooms = this.props.rooms.map(room =>
 			<Room key={room.entity._links.self.href} room={room} attributes={this.props.attributes} authenticatedUser={this.props.authenticatedUser}/>
@@ -165,10 +165,19 @@ class RoomList extends React.Component {
 
 		return (
 				<div>
-					<div>
-						<p>{pageInfo}</p>
-						<p>{navLinks}</p>	
+					<div className="card text-center">
+					  <div className="card-header">
+					  	{pageInfo}
+					  </div>
+					  <div className="card-body">
+					    <h5 className="card-title">Welcome To The Cola Day Meeting Room Booking Application !</h5>
+					    <p className="card-text">Book meetings from 8am to 6pm amongst the 20 available rooms provided by both Coke and Pepsi !</p>
+					  </div>
+					  <div className="card-footer text-muted">
+					  	<p>{navLinks}</p>
+					  </div>
 					</div>
+					<br/>
 					<div className="card-deck"> {rooms} </div>
 				</div>
 		)
@@ -225,7 +234,7 @@ class Room extends React.Component{
 	
 	render() {
 		return (
-				  <div className="card border-primary mb-3">
+				  <div className="card border-primary bg-light mb-3">
 				  	<div className="card-header text-center">{this.props.room.entity.roomName}</div>
 				    <div className="card-body">
 				      <MeetingList 

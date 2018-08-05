@@ -25,15 +25,6 @@ public class HomeController {
 	EmployeeRepository employees;
 
 	/**
-	 * Serves the home page.
-	 * @return home page view
-	 */
-	@RequestMapping(value = "/")
-	public String index() {
-		return "index";
-	}
-
-	/**
 	 * Serves the login page.
 	 * @return login page view
 	 */
@@ -42,11 +33,19 @@ public class HomeController {
 		return "/login";
 	}
 	
+	/**
+	 * Serves the home page.
+	 * @return home page view
+	 */
 	@GetMapping("/user")
     public String userIndex() {
         return "user/index";
     }
 
+	/**
+	 * Acces denied page
+	 * @return access denied vi
+	 */
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "/error/access-denied";
