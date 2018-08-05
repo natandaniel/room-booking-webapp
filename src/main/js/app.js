@@ -309,8 +309,14 @@ class Meeting extends React.Component{
 				)
 		}else if(meetingBookedByCurrentUser){
 			
+			var styles = {
+					borderLeft: '10',
+					borderLeftColor : '#28a745',
+					borderLeftStyle : 'solid'
+				};
+			
 			return (
-					<tr>
+					<tr style={styles}>
 						<td>
 							<p>
 								{(new Date(this.props.meeting.meetingStartTime)).getHours().toString()}h - {((new Date(this.props.meeting.meetingStartTime)).getHours()+1).toString()}h 

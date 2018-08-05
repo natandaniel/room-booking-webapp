@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.natandanielapps.consensysbooking.repository.EmployeeRepository;
 import com.natandanielapps.consensysbooking.services.entities.Employee;
@@ -32,6 +31,15 @@ public class HomeController {
 	public String login() {
 		return "/login";
 	}
+	
+	/**
+	 * Serves the login page.
+	 * @return home page view
+	 */
+	@GetMapping("/")
+    public String index() {
+        return "/login";
+    }
 	
 	/**
 	 * Serves the home page.

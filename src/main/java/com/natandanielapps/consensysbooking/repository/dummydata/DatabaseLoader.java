@@ -78,7 +78,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
 		} catch (ResourceNotFoundException e) {
 
-			Employee u002 = new Employee("u002", "u002", "Pepsi", "ROLE_MANAGER");
+			Employee u002 = new Employee("u002", "u002", "Pepsi", "ROLE_MANAGER", "ROLE_USER");
 			employees.save(u002);
 
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("u002",
