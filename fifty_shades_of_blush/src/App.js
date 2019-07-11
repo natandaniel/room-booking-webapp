@@ -46,7 +46,7 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{title}</h2>
-        {sections.map((item) =>
+        {this.state.sections.map((item) =>
           <div key={item.id}>
             <span>
               <a href={item.url}>{item.title}</a>
