@@ -35,7 +35,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      sections : sections,
+      sections, // equivalent to sections: sections,
     }
   }
 
