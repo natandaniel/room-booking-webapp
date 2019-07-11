@@ -11,21 +11,25 @@ class App extends Component {
         title: 'Beauty',
         description: 'My tips and personal creations',
         url: 'localhost:3000',
+        id: 0
       },
       {
         title: 'Fashion',
         description: 'Everything about fashion an style',
         url: 'localhost:3000',
+        id: 1
       },
       {
         title: 'Travel',
         description: 'My journey around the world',
         url: 'localhost:3000',
+        id: 2
       },
       {
         title: 'Lifestyle',
         description: 'How I style my life',
         url: 'localhost:3000',
+        id: 3
       }
 
     ]
@@ -34,7 +38,7 @@ class App extends Component {
       <div className="App">
         <h2>{title}</h2>
         {sections.map((item) =>
-          <div>
+          <div key={item.id}>
             <span>
               <a href={item.url}>{item.title}</a>
             </span>
