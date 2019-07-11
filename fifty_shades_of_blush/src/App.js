@@ -1,38 +1,47 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const sections = [
+  {
+    title: 'Beauty',
+    description: 'My tips and personal creations',
+    url: 'localhost:3000',
+    id: 0
+  },
+  {
+    title: 'Fashion',
+    description: 'Everything about fashion an style',
+    url: 'localhost:3000',
+    id: 1
+  },
+  {
+    title: 'Travel',
+    description: 'My journey around the world',
+    url: 'localhost:3000',
+    id: 2
+  },
+  {
+    title: 'Lifestyle',
+    description: 'How I style my life',
+    url: 'localhost:3000',
+    id: 3
+  }
+
+]
+
 class App extends Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      sections : sections,
+    }
+  }
+
   render() {
 
     const title = 'Fifty Shades Of Blush';
-
-    const sections = [
-      {
-        title: 'Beauty',
-        description: 'My tips and personal creations',
-        url: 'localhost:3000',
-        id: 0
-      },
-      {
-        title: 'Fashion',
-        description: 'Everything about fashion an style',
-        url: 'localhost:3000',
-        id: 1
-      },
-      {
-        title: 'Travel',
-        description: 'My journey around the world',
-        url: 'localhost:3000',
-        id: 2
-      },
-      {
-        title: 'Lifestyle',
-        description: 'How I style my life',
-        url: 'localhost:3000',
-        id: 3
-      }
-
-    ]
 
     return (
       <div className="App">
