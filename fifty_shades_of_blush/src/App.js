@@ -1,4 +1,4 @@
-import React, { Component } from 'react'; 
+import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
@@ -8,20 +8,24 @@ class App extends Component {
 
     const sections = [
       {
-        title : 'Beauty',
-        description : 'My tips and personal creations'
+        title: 'Beauty',
+        description: 'My tips and personal creations',
+        url: 'localhost:3000',
       },
       {
-        title : 'Fashion',
-        description : 'Everything about fashion an style'
+        title: 'Fashion',
+        description: 'Everything about fashion an style',
+        url: 'localhost:3000',
       },
       {
-        title : 'Travel',
-        description : 'My journey around the world'
+        title: 'Travel',
+        description: 'My journey around the world',
+        url: 'localhost:3000',
       },
       {
-        title : 'Lifestyle',
-        description : 'How I style my life'
+        title: 'Lifestyle',
+        description: 'How I style my life',
+        url: 'localhost:3000',
       }
 
     ]
@@ -29,7 +33,15 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{title}</h2>
-        {sections.map((item)=><div>{item.title}</div>)}
+        {sections.map((item) =>
+          <div>
+            <span>
+              <a href={item.url}>{item.title}</a>
+            </span>
+            <p>{item.description}</p>
+          </div>
+          )
+        }
       </div>
     );
   }
