@@ -1,0 +1,1 @@
+# This project holds the back end software for the blog : "Fifty Shades Of Blush"
