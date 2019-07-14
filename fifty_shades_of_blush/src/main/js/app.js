@@ -3,6 +3,8 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+import ButtonAppBar from './components/appBar';
+
 const sections = [
   {
     title: 'Beauty',
@@ -53,6 +55,7 @@ class App extends React.Component {
 
     return (
       <div className="App">
+      <ButtonAppBar></ButtonAppBar>
         <h2>{title}</h2>
         {this.state.sections.map((item) =>
           <div key={item.id}>
