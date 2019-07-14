@@ -1,26 +1,25 @@
 var path = require('path');
 
-var node_dir = __dirname + '/node_modules';
-
 module.exports = {
     entry: './src/main/js/app.js',
     devtool: 'sourcemaps',
     cache: true,
-    debug: true,
+    mode: 'development',
     output: {
         path: __dirname,
         filename: './src/main/resources/static/built/bundle.js'
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: path.join(__dirname, '.'),
                 exclude: /(node_modules)/,
-                loader: 'babel-loader',
-                query: {
-                    cacheDirectory: true,
-                    presets: ['@babel/preset-env', 'react']
-                }
+                use: [{
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ["@babel/preset-env", "@babel/preset-react"]
+                    }
+                }]
             }
         ]
     }
