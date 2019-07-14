@@ -1,9 +1,6 @@
-'use strict';
-
-const React = require('react');
-const ReactDOM = require('react-dom');
-
-import ButtonAppBar from './components/appBar';
+import React from 'react';
+import Container from '@material-ui/core/Container';
+import Header from './components/Header';
 
 const sections = [
   {
@@ -55,24 +52,23 @@ class App extends React.Component {
 
     return (
       <div className="App">
-      <ButtonAppBar></ButtonAppBar>
-        <h2>{title}</h2>
-        {this.state.sections.map((item) =>
-          <div key={item.id}>
-            <span>
-              <a href={item.url}>{item.title}</a>
-            </span>
-            <p>{item.description}</p>
-            <button onClick={() => this.goToSection(item.url)}>Go</button>
-          </div>
-        )
-        }
+        <Container maxWidth="lg">
+          <Header></Header>
+          <h2>{title}</h2>
+          {this.state.sections.map((item) =>
+            <div key={item.id}>
+              <span>
+                <a href={item.url}>{item.title}</a>
+              </span>
+              <p>{item.description}</p>
+              <button onClick={() => this.goToSection(item.url)}>Go</button>
+            </div>
+          )
+          }
+        </Container>
       </div>
     );
   }
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('50ShadesOfBlush')
-)
+export default App;
