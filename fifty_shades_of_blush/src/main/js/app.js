@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import './App.css';
+'use strict';
+
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 const sections = [
   {
@@ -29,7 +31,7 @@ const sections = [
 
 ]
 
-class App extends Component {
+class App extends React.Component {
 
   constructor(props) {
     super(props);
@@ -41,8 +43,8 @@ class App extends Component {
     this.goToSection = this.goToSection.bind();
   }
 
-  goToSection(url){
-    console.log("Going to " + url)
+  goToSection(url) {
+    console.log("Going to " + url);
   }
 
   render() {
@@ -67,4 +69,7 @@ class App extends Component {
   }
 }
 
-export default App;
+ReactDOM.render(
+  <App />,
+  document.getElementById('50ShadesOfBlush')
+)
