@@ -37,6 +37,19 @@ public class ArticlesController {
 	public ArticlesController(ArticleRepository articleRepo) {
 		this.articleRepo = articleRepo;
 	}
+	
+	@GetMapping("/latest")
+	public Resources<ArticleResource> getLatestArticle() {
+
+		PageRequest page = PageRequest.of(0, 1, Sort.by("createdAt").descending());
+		Iterable<Article> articles = articleRepo.findAll(page).getContent();
+
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getLatestArticle()).withRel("latest"));
+		return recentResources;
+	}
 
 	@GetMapping("/recent")
 	public Resources<ArticleResource> getRecentArtciles() {
