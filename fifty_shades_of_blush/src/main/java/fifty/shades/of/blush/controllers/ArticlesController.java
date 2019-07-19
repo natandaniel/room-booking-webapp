@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,10 +37,12 @@ public class ArticlesController {
 	}
 
 	@GetMapping("/recent")
-	public ResponseEntity<Iterable<Article>> getRecentArtciles() {
+	public Resources<Resource<Article>> getRecentArtciles() {
 		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
 		Iterable<Article> articles = articleRepo.findAll(page).getContent();
-		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+		Resources<Resource<Article>> recentResources = Resources.wrap(articles);
+		recentResources.add(new Link("http://localhost:8080/articles/recent", "recents"));
+		return recentResources;
 	}
 
 	@GetMapping("/beauty")
