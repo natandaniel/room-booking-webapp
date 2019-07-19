@@ -7,7 +7,7 @@ import fifty.shades.of.blush.entities.Article;
 public class ArticleResourceAssembler extends ResourceAssemblerSupport<Article, ArticleResource> {
 
 	public ArticleResourceAssembler() {
-		super(ArticlesController.class, ArticleResource.class);
+		super(ArticlesControllerBackup.class, ArticleResource.class);
 	}
 
 	@Override
