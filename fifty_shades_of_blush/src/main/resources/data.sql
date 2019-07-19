@@ -14,3 +14,6 @@ values (3, 'TRAVEL', 'THIS IS A TRAVEL ARTICLE', 1, 'THIS IS A TRAVEL ARTICLE', 
 
 insert into articles (id, title, subtitle, user_id, body, article_type, created_at, updated_at) 
 values (4, 'LIFESTYLE', 'THIS IS A LIFESTYLE ARTICLE', 1, 'THIS IS A LIFESTYLE ARTICLE', 'LIFESTYLE', SYSDATE, SYSDATE);
+
+insert into articles (id, title, subtitle, user_id, body, article_type, created_at, updated_at) 
+values (5, 'BEAUTY', 'THIS IS A 2ND BEAUTY ARTICLE', 1, 'THIS IS A 2ND BEAUTY ARTICLE', 'BEAUTY', SYSDATE, SYSDATE);
