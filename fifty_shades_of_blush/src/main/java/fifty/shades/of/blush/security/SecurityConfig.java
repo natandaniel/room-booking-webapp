@@ -3,6 +3,7 @@ package fifty.shades.of.blush.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,7 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/articles/admin").hasRole("ADMIN").antMatchers("/", "/**")
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/articles").hasRole("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/articles").hasRole("ADMIN").antMatchers(HttpMethod.PATCH, "/articles")
+				.hasRole("ADMIN").antMatchers(HttpMethod.DELETE, "/articles").hasRole("ADMIN").antMatchers("/", "/**")
 				.permitAll();
 	}
 }
