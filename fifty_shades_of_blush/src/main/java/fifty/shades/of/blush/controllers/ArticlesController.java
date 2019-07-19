@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,9 +59,26 @@ public class ArticlesController {
 		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
 	}
 
-	@PostMapping(consumes = "application/json")
+	@PostMapping(path="/admin", consumes = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Article postTaco(@RequestBody Article article) {
+		return articleRepo.save(article);
+	}
+
+	@PatchMapping(path = "/admin/{articleId}", consumes = "application/json")
+	public Article patchArticle(@PathVariable("articleId") Long articleId, @RequestBody Article patch) {
+		Article article = articleRepo.findById(articleId).get();
+		
+		if (patch.getTitle() != null) {
+			article.setTitle(patch.getTitle());
+		}
+		if (patch.getBody() != null) {
+			article.setBody(patch.getBody());
+		}
+		if (patch.getType() != null) {
+			article.setType(patch.getType());
+		}
+		
 		return articleRepo.save(article);
 	}
 
