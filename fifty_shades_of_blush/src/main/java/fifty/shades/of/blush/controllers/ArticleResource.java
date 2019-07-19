@@ -27,7 +27,7 @@ public class ArticleResource extends ResourceSupport{
 	public ArticleResource(Article article) {
 		this.type = article.getType();
 		this.title = article.getTitle();
-		this.subtitle = article.getSubitle();
+		this.subtitle = article.getSubtitle();
 		this.body = article.getBody();
 		this.createdAt = article.getCreatedAt();
 	}
