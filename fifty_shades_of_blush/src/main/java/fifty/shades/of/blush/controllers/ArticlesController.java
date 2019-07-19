@@ -3,12 +3,12 @@ package fifty.shades.of.blush.controllers;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +39,14 @@ public class ArticlesController {
 	}
 
 	@GetMapping("/recent")
-	public Resources<Resource<Article>> getRecentArtciles() {
+	public Resources<ArticleResource> getRecentArtciles() {
+
 		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
 		Iterable<Article> articles = articleRepo.findAll(page).getContent();
-		Resources<Resource<Article>> recentResources = Resources.wrap(articles);
+
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+
 		recentResources.add(linkTo(methodOn(ArticlesController.class).getRecentArtciles()).withRel("recents"));
 		return recentResources;
 	}
