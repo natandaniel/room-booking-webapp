@@ -39,6 +39,10 @@ public class Article {
 	@NotBlank
 	@Size(min = 5, message = "Title must be at least 5 characters long")
 	private String title;
+	
+	@NotBlank
+	@Size(min = 5, message = "Subtitle must be at least 5 characters long")
+	private String subtitle;
 
 	@NotBlank
 	@ManyToOne
