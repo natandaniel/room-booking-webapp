@@ -41,7 +41,7 @@ public class ArticlesController {
 		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
 		Iterable<Article> articles = articleRepo.findAll(page).getContent();
 		Resources<Resource<Article>> recentResources = Resources.wrap(articles);
-		recentResources.add(ControllerLinkBuilder.linkTo(ArticlesController.class).slash("article/recent").withRel("recents"));
+		recentResources.add(ControllerLinkBuilder.linkTo(ArticlesController.class).slash("recent").withRel("recents"));
 		return recentResources;
 	}
 
