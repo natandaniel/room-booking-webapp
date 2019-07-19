@@ -1,5 +1,7 @@
 package fifty.shades.of.blush.controllers;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,9 +23,34 @@ public class ArticlesController {
 		this.articleRepo = articleRepo;
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<Iterable<Article>> getAllArticles() {
-		Iterable<Article> articles = articleRepo.findAll();
+	@GetMapping("/recent")
+	public ResponseEntity<Iterable<Article>> getRecentArtciles() {
+		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
+		Iterable<Article> articles = articleRepo.findAll(page).getContent();
+		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+	}
+
+	@GetMapping("/beauty")
+	public ResponseEntity<Iterable<Article>> getBeautyArticles() {
+		Iterable<Article> articles = articleRepo.findByType("BEAUTY");
+		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+	}
+
+	@GetMapping("/fashion")
+	public ResponseEntity<Iterable<Article>> getFashionArticles() {
+		Iterable<Article> articles = articleRepo.findByType("FASHION");
+		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+	}
+
+	@GetMapping("/travel")
+	public ResponseEntity<Iterable<Article>> getTravelArticles() {
+		Iterable<Article> articles = articleRepo.findByType("TRAVEL");
+		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+	}
+
+	@GetMapping("/lifestyle")
+	public ResponseEntity<Iterable<Article>> getLifestyleArticles() {
+		Iterable<Article> articles = articleRepo.findByType("LIFESTYLE");
 		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
 	}
 
