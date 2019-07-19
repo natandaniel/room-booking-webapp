@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,7 +41,7 @@ public class ArticlesController {
 		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
 		Iterable<Article> articles = articleRepo.findAll(page).getContent();
 		Resources<Resource<Article>> recentResources = Resources.wrap(articles);
-		recentResources.add(new Link("http://localhost:8080/articles/recent", "recents"));
+		recentResources.add(ControllerLinkBuilder.linkTo(ArticlesController.class).slash("article/recent").withRel("recents"));
 		return recentResources;
 	}
 
