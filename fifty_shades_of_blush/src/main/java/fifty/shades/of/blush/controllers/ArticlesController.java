@@ -52,27 +52,49 @@ public class ArticlesController {
 	}
 
 	@GetMapping("/beauty")
-	public ResponseEntity<Iterable<Article>> getBeautyArticles() {
+	public Resources<ArticleResource> getBeautyArticles() {
+		
 		Iterable<Article> articles = articleRepo.findByType("BEAUTY");
-		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getBeautyArticles()).withRel("beauty"));
+		return recentResources;
 	}
 
 	@GetMapping("/fashion")
-	public ResponseEntity<Iterable<Article>> getFashionArticles() {
+	public Resources<ArticleResource> getFashionArticles() {
+		
 		Iterable<Article> articles = articleRepo.findByType("FASHION");
-		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getBeautyArticles()).withRel("fashion"));
+		return recentResources;
 	}
 
 	@GetMapping("/travel")
-	public ResponseEntity<Iterable<Article>> getTravelArticles() {
+	public Resources<ArticleResource> getTravelArticles() {
 		Iterable<Article> articles = articleRepo.findByType("TRAVEL");
-		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getBeautyArticles()).withRel("travel"));
+		return recentResources;
 	}
 
 	@GetMapping("/lifestyle")
-	public ResponseEntity<Iterable<Article>> getLifestyleArticles() {
+	public Resources<ArticleResource> getLifestyleArticles() {
 		Iterable<Article> articles = articleRepo.findByType("LIFESTYLE");
-		return new ResponseEntity<Iterable<Article>>(articles, HttpStatus.OK);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getBeautyArticles()).withRel("lifestyle"));
+		return recentResources;
 	}
 
 	@PostMapping(path = "/admin", consumes = "application/json")
