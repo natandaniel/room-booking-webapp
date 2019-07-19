@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -33,10 +32,6 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "articles")
 public class Article {
 
-	private enum ArticleType {
-		BEAUTY, FASHION, TRAVEL, LIFESTYLE
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -44,6 +39,10 @@ public class Article {
 	@NotBlank
 	@Size(min = 5, message = "Title must be at least 5 characters long")
 	private String title;
+	
+	@NotBlank
+	@Size(min = 5, message = "Subtitle must be at least 5 characters long")
+	private String subtitle;
 
 	@NotBlank
 	@ManyToOne
@@ -54,8 +53,9 @@ public class Article {
 	@Size(min = 50, message = "Body must be at least 50 characters long")
 	private String body;
 
-	@NotNull
-	private ArticleType type;
+	@NotBlank
+	@Column(name="article_type")
+	private String type;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
