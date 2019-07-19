@@ -50,6 +50,7 @@ public class Article {
 	private String body;
 
 	@NotBlank
+	@Column(name="article_type")
 	private String type;
 
 	@Column(nullable = false, updatable = false)
