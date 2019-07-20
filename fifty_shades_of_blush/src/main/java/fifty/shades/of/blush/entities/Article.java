@@ -45,6 +45,7 @@ public class Article {
 	@NotBlank
 	@ManyToOne
 	@JoinColumn(name="user_id")
+	@JsonIgnore
 	private User user;
 
 	@NotBlank

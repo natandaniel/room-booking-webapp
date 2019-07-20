@@ -66,4 +66,15 @@ public class SpringDataRestConfiguration {
 			}
 		};
 	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> lifestyleRecentArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("lifestyle").slash("recent").withRel("recentLifestyle"));
+				return resource;
+			}
+		};
+	}
 }
