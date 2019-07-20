@@ -8,12 +8,14 @@ import java.util.List;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fifty.shades.of.blush.entities.Article;
 import fifty.shades.of.blush.repositories.ArticleRepository;
 
 @RestController
+@RequestMapping(path = "/api/articles", produces = "application/hal+json")
 @CrossOrigin(origins = "*")
 public class FashionArticlesController {
 
@@ -23,7 +25,7 @@ public class FashionArticlesController {
 		this.articleRepo = articleRepo;
 	}
 
-	@GetMapping("/api/articles/fashion")
+	@GetMapping("/fashion")
 	public Resources<ArticleResource> getFashionArticles() {
 
 		Iterable<Article> articles = articleRepo.findByType("FASHION");
