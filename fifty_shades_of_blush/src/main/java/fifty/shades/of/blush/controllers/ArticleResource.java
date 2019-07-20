@@ -7,20 +7,20 @@ import org.springframework.hateoas.ResourceSupport;
 import fifty.shades.of.blush.entities.Article;
 import lombok.Getter;
 
-public class ArticleResource extends ResourceSupport{
-	
-	@Getter 
+public class ArticleResource extends ResourceSupport {
+
+	@Getter
 	private final String type;
-	
+
 	@Getter
 	private final String title;
-	
+
 	@Getter
 	private final String subtitle;
-	
+
 	@Getter
 	private final String body;
-	
+
 	@Getter
 	private final Date createdAt;
 
