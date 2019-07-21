@@ -77,4 +77,15 @@ public class SpringDataRestConfiguration {
 			}
 		};
 	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> createArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("create").withRel("create"));
+				return resource;
+			}
+		};
+	}
 }
