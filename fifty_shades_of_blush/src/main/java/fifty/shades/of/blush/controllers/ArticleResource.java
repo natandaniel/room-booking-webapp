@@ -23,6 +23,9 @@ public class ArticleResource extends ResourceSupport {
 
 	@Getter
 	private final Date createdAt;
+	
+	@Getter
+	private final Date updatedAt;
 
 	public ArticleResource(Article article) {
 		this.type = article.getType();
@@ -30,5 +33,6 @@ public class ArticleResource extends ResourceSupport {
 		this.subtitle = article.getSubtitle();
 		this.body = article.getBody();
 		this.createdAt = article.getCreatedAt();
+		this.updatedAt = article.getUpdatedAt();
 	}
 }
