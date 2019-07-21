@@ -46,9 +46,6 @@ public class User implements UserDetails {
 	private String firstName;
 	private String lastName;
 
-	@OneToMany(mappedBy = "user")
-	private Set<Article> articles;
-
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
