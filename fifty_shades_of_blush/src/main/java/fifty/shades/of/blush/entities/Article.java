@@ -43,6 +43,9 @@ public class Article {
 	@NotBlank
 	@Size(min = 50, message = "Body must be at least 50 characters long")
 	private String body;
+	
+	@NotBlank
+	private String imgName;
 
 	@NotBlank
 	@Column(name="article_type")
@@ -51,12 +54,10 @@ public class Article {
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
-	@JsonIgnore
 	private Date createdAt;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
-	@JsonIgnore
 	private Date updatedAt;
 }

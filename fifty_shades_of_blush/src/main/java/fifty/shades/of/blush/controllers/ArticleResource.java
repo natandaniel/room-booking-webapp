@@ -8,7 +8,7 @@ import fifty.shades.of.blush.entities.Article;
 import lombok.Getter;
 
 public class ArticleResource extends ResourceSupport {
-
+	
 	@Getter
 	private final String type;
 
@@ -22,6 +22,9 @@ public class ArticleResource extends ResourceSupport {
 	private final String body;
 
 	@Getter
+	private final String imgName;
+
+	@Getter
 	private final Date createdAt;
 	
 	@Getter
@@ -32,6 +35,7 @@ public class ArticleResource extends ResourceSupport {
 		this.title = article.getTitle();
 		this.subtitle = article.getSubtitle();
 		this.body = article.getBody();
+		this.imgName = article.getImgName();
 		this.createdAt = article.getCreatedAt();
 		this.updatedAt = article.getUpdatedAt();
 	}
