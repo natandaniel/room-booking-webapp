@@ -19,6 +19,9 @@ import fifty.shades.of.blush.repositories.ArticleRepository;
 @CrossOrigin(origins = "*")
 public class TravelArticlesController {
 	
+	private final String TRAVEL = "TRAVEL";
+	private final String RECENT = "recent";
+	
 	private ArticleRepository articleRepo;
 
 	public TravelArticlesController(ArticleRepository articleRepo) {
@@ -27,12 +30,25 @@ public class TravelArticlesController {
 	
 	@GetMapping("/travel")
 	public Resources<ArticleResource> getTravelArticles() {
-		Iterable<Article> articles = articleRepo.findByType("TRAVEL");
+		
+		Iterable<Article> articles = articleRepo.findByType(TRAVEL);
 		
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 		
-		recentResources.add(linkTo(methodOn(TravelArticlesController.class).getTravelArticles()).withRel("travel"));
+		recentResources.add(linkTo(methodOn(TravelArticlesController.class).getTravelArticles()).withRel(RECENT));
+		return recentResources;
+	}
+	
+	@GetMapping("/travel/recent")
+	public Resources<ArticleResource> getRecentTravelArticles() {
+		
+		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(TRAVEL);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(TravelArticlesController.class).getRecentTravelArticles()).withRel(RECENT));
 		return recentResources;
 	}
 

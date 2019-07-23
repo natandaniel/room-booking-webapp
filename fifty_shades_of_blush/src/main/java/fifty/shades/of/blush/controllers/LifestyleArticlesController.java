@@ -18,6 +18,9 @@ import fifty.shades.of.blush.repositories.ArticleRepository;
 @RequestMapping(path = "/api/articles", produces = "application/hal+json")
 @CrossOrigin(origins = "*")
 public class LifestyleArticlesController {
+	
+	private final String LIFESTYLE = "LIFESTYLE";
+	private final String RECENT = "recent";
 
 	private ArticleRepository articleRepo;
 
@@ -27,7 +30,8 @@ public class LifestyleArticlesController {
 
 	@GetMapping("/lifestyle")
 	public Resources<ArticleResource> getLifestyleArticles() {
-		Iterable<Article> articles = articleRepo.findByType("LIFESTYLE");
+		
+		Iterable<Article> articles = articleRepo.findByType(LIFESTYLE);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -41,13 +45,13 @@ public class LifestyleArticlesController {
 	@GetMapping("/lifestyle/recent")
 	public Resources<ArticleResource> getRecentLifestyleArticles() {
 		
-		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc("LIFESTYLE"); 
+		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(LIFESTYLE); 
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 
 		recentResources
-				.add(linkTo(methodOn(LifestyleArticlesController.class).getLifestyleArticles()).withRel("lifestyle"));
+				.add(linkTo(methodOn(LifestyleArticlesController.class).getRecentLifestyleArticles()).withRel(RECENT));
 
 		return recentResources;
 	}

@@ -20,25 +20,40 @@ import fifty.shades.of.blush.repositories.ArticleRepository;
 @RequestMapping(path = "/api/articles", produces = "application/hal+json")
 @CrossOrigin(origins = "*")
 public class BeautyArticlesController {
-	
+
+	private final String BEAUTY = "BEAUTY";
+	private final String RECENT = "recent";
+
 	private ArticleRepository articleRepo;
 
 	public BeautyArticlesController(ArticleRepository articleRepo) {
 		this.articleRepo = articleRepo;
 	}
-	
+
 	@GetMapping("/beauty")
 	public ResponseEntity<Resources<ArticleResource>> getBeautyArticles() {
-		
-		Iterable<Article> articles = articleRepo.findByType("BEAUTY");
-		
+
+		Iterable<Article> articles = articleRepo.findByType(BEAUTY);
+
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
-		
-		recentResources.add(linkTo(methodOn(BeautyArticlesController.class).getBeautyArticles()).withRel("beauty"));
-		
+
+		recentResources.add(linkTo(methodOn(BeautyArticlesController.class).getBeautyArticles()).withRel(RECENT));
+
 		return new ResponseEntity<>(recentResources, HttpStatus.OK);
 	}
 
+	@GetMapping("/beauty/recent")
+	public ResponseEntity<Resources<ArticleResource>> getRecentBeautyArticles() {
+
+		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(BEAUTY);
+
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+
+		recentResources.add(linkTo(methodOn(BeautyArticlesController.class).getRecentBeautyArticles()).withRel(RECENT));
+
+		return new ResponseEntity<>(recentResources, HttpStatus.OK);
+	}
 
 }

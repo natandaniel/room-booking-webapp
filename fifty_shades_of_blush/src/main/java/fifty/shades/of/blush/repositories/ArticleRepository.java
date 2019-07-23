@@ -8,6 +8,6 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
 
 	Iterable<Article> findByType(String type);
 
-	Iterable<Article> findByTypeOrderByCreatedAtDesc(String type);
+	Iterable<Article> findTop2ByTypeOrderByCreatedAtDesc(String type);
 
 }
