@@ -35,6 +35,17 @@ public class SpringDataRestConfiguration {
 	}
 	
 	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> recentBeautyArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("beauty").slash("recent").withRel("recentBeauty"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
 	public ResourceProcessor<PagedResources<Resource<Article>>> fashionArticleProcessor(EntityLinks links) {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
@@ -46,11 +57,33 @@ public class SpringDataRestConfiguration {
 	}
 	
 	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> recentFashionArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("fashion").slash("recent").withRel("recentFashion"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
 	public ResourceProcessor<PagedResources<Resource<Article>>> travelArticleProcessor(EntityLinks links) {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
 				resource.add(links.linkFor(Article.class).slash("travel").withRel("travel"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> recentTravelArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("travel").slash("recent").withRel("recentTravel"));
 				return resource;
 			}
 		};
@@ -84,6 +117,28 @@ public class SpringDataRestConfiguration {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
 				resource.add(links.linkFor(Article.class).slash("create").withRel("create"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> deleteArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("delete").withRel("delete"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> putArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("put").withRel("put"));
 				return resource;
 			}
 		};
