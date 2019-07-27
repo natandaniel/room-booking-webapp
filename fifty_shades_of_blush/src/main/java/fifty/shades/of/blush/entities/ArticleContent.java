@@ -1,15 +1,14 @@
 package fifty.shades.of.blush.entities;
 
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,30 +25,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Entity
-@Table(name = "articles")
-public class Article {
-
+@Table(name = "article_content")
+public class ArticleContent {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@NotBlank
-	@Size(min = 5, message = "Title must be at least 5 characters long")
-	private String title;
 	
-	@NotBlank
-	@Size(min = 5, message = "Subtitle must be at least 5 characters long")
-	private String subtitle;
+	@ManyToOne
+	@JoinColumn(name="article_id")
+	private Article article;
 
 	@NotBlank
-	private String imgName;
+	@Size(min = 5, message = "content must be at least 5 characters long")
+	@Column(length=10000)
+	private String content;
 
-	@NotBlank
-	@Column(name="article_type")
-	private String type;
-	
-	@OneToMany(mappedBy="article", cascade = CascadeType.ALL)
-	private List<ArticleContent> paragraphs;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -60,4 +51,5 @@ public class Article {
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
+
 }

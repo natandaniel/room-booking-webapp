@@ -19,9 +19,6 @@ public class ArticleResource extends ResourceSupport {
 	private final String subtitle;
 
 	@Getter
-	private final String body;
-
-	@Getter
 	private final String imgName;
 
 	@Getter
@@ -34,7 +31,6 @@ public class ArticleResource extends ResourceSupport {
 		this.type = article.getType();
 		this.title = article.getTitle();
 		this.subtitle = article.getSubtitle();
-		this.body = article.getBody();
 		this.imgName = article.getImgName();
 		this.createdAt = article.getCreatedAt();
 		this.updatedAt = article.getUpdatedAt();

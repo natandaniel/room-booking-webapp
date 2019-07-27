@@ -17,7 +17,7 @@ public class SpringDataRestConfiguration {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("recent").withRel("recent"));
+				resource.add(links.linkFor(Article.class).slash("latest").withRel("latest"));
 				return resource;
 			}
 		};

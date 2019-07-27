@@ -40,16 +40,16 @@ public class ArticlesController {
 	@Autowired
 	EntityLinks entityLinks;
 
-	@GetMapping("/recent")
+	@GetMapping("/latest")
 	public Resources<ArticleResource> getLatestArticles() {
 
-		PageRequest page = PageRequest.of(0, 2, Sort.by("createdAt").descending());
+		PageRequest page = PageRequest.of(0, 1, Sort.by("createdAt").descending());
 		Iterable<Article> articles = articleRepo.findAll(page).getContent();
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 
-		recentResources.add(linkTo(methodOn(ArticlesController.class).getLatestArticles()).withRel("recent"));
+		recentResources.add(linkTo(methodOn(ArticlesController.class).getLatestArticles()).withRel("latest"));
 
 		return recentResources;
 	}
