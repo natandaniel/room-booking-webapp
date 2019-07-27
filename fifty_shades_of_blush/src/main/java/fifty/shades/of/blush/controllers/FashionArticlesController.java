@@ -21,6 +21,7 @@ public class FashionArticlesController {
 	
 	private final String FASHION = "FASHION";
 	private final String RECENT = "recent";
+	private final String LATEST = "latest";
 
 	private ArticleRepository articleRepo;
 
@@ -31,7 +32,7 @@ public class FashionArticlesController {
 	@GetMapping("/fashion")
 	public Resources<ArticleResource> getFashionArticles() {
 
-		Iterable<Article> articles = articleRepo.findByType(FASHION);
+		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(FASHION);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -50,6 +51,19 @@ public class FashionArticlesController {
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 
 		recentResources.add(linkTo(methodOn(FashionArticlesController.class).getRecentFashionArticles()).withRel(RECENT));
+
+		return recentResources;
+	}
+	
+	@GetMapping("/fashion/latest")
+	public Resources<ArticleResource> getLatestFashionArticle() {
+
+		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(FASHION);
+
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+
+		recentResources.add(linkTo(methodOn(FashionArticlesController.class).getLatestFashionArticle()).withRel(LATEST));
 
 		return recentResources;
 	}

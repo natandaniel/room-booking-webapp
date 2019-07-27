@@ -23,6 +23,7 @@ public class BeautyArticlesController {
 
 	private final String BEAUTY = "BEAUTY";
 	private final String RECENT = "recent";
+	private final String LATEST = "latest";
 
 	private ArticleRepository articleRepo;
 
@@ -33,7 +34,7 @@ public class BeautyArticlesController {
 	@GetMapping("/beauty")
 	public ResponseEntity<Resources<ArticleResource>> getBeautyArticles() {
 
-		Iterable<Article> articles = articleRepo.findByType(BEAUTY);
+		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(BEAUTY);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -52,6 +53,19 @@ public class BeautyArticlesController {
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 
 		recentResources.add(linkTo(methodOn(BeautyArticlesController.class).getRecentBeautyArticles()).withRel(RECENT));
+
+		return new ResponseEntity<>(recentResources, HttpStatus.OK);
+	}
+	
+	@GetMapping("/beauty/latest")
+	public ResponseEntity<Resources<ArticleResource>> getLatestBeautyArticle() {
+
+		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(BEAUTY);
+
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+
+		recentResources.add(linkTo(methodOn(BeautyArticlesController.class).getLatestBeautyArticle()).withRel(LATEST));
 
 		return new ResponseEntity<>(recentResources, HttpStatus.OK);
 	}

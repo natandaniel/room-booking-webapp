@@ -21,6 +21,7 @@ public class TravelArticlesController {
 	
 	private final String TRAVEL = "TRAVEL";
 	private final String RECENT = "recent";
+	private final String LATEST = "latest";
 	
 	private ArticleRepository articleRepo;
 
@@ -31,7 +32,7 @@ public class TravelArticlesController {
 	@GetMapping("/travel")
 	public Resources<ArticleResource> getTravelArticles() {
 		
-		Iterable<Article> articles = articleRepo.findByType(TRAVEL);
+		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(TRAVEL);
 		
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -49,6 +50,18 @@ public class TravelArticlesController {
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
 		
 		recentResources.add(linkTo(methodOn(TravelArticlesController.class).getRecentTravelArticles()).withRel(RECENT));
+		return recentResources;
+	}
+	
+	@GetMapping("/travel/latest")
+	public Resources<ArticleResource> getLatestTravelArticle() {
+		
+		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(TRAVEL);
+		
+		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
+		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
+		
+		recentResources.add(linkTo(methodOn(TravelArticlesController.class).getLatestTravelArticle()).withRel(LATEST));
 		return recentResources;
 	}
 

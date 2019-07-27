@@ -12,12 +12,15 @@ import fifty.shades.of.blush.entities.Article;
 @Configuration
 public class SpringDataRestConfiguration {
 	
+	private final String RECENT = "recent";
+	private final String LATEST = "latest";
+	
 	@Bean
 	public ResourceProcessor<PagedResources<Resource<Article>>> recentArticleProcessor(EntityLinks links) {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("latest").withRel("latest"));
+				resource.add(links.linkFor(Article.class).slash(LATEST).withRel(LATEST));
 				return resource;
 			}
 		};
@@ -39,7 +42,18 @@ public class SpringDataRestConfiguration {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("beauty").slash("recent").withRel("recentBeauty"));
+				resource.add(links.linkFor(Article.class).slash("beauty").slash(RECENT).withRel("recentBeauty"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> latestBeautyArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("beauty").slash(LATEST).withRel("latestBeauty"));
 				return resource;
 			}
 		};
@@ -61,7 +75,18 @@ public class SpringDataRestConfiguration {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("fashion").slash("recent").withRel("recentFashion"));
+				resource.add(links.linkFor(Article.class).slash("fashion").slash(RECENT).withRel("recentFashion"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> latestFashionArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("fashion").slash(LATEST).withRel("latestFashion"));
 				return resource;
 			}
 		};
@@ -83,7 +108,18 @@ public class SpringDataRestConfiguration {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("travel").slash("recent").withRel("recentTravel"));
+				resource.add(links.linkFor(Article.class).slash("travel").slash(RECENT).withRel("recentTravel"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> latestTravelArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("travel").slash(LATEST).withRel("latestTravel"));
 				return resource;
 			}
 		};
@@ -105,7 +141,18 @@ public class SpringDataRestConfiguration {
 		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
 			@Override
 			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
-				resource.add(links.linkFor(Article.class).slash("lifestyle").slash("recent").withRel("recentLifestyle"));
+				resource.add(links.linkFor(Article.class).slash("lifestyle").slash(RECENT).withRel("recentLifestyle"));
+				return resource;
+			}
+		};
+	}
+	
+	@Bean
+	public ResourceProcessor<PagedResources<Resource<Article>>> lifestyleLatestArticleProcessor(EntityLinks links) {
+		return new ResourceProcessor<PagedResources<Resource<Article>>>() {
+			@Override
+			public PagedResources<Resource<Article>> process(PagedResources<Resource<Article>> resource) {
+				resource.add(links.linkFor(Article.class).slash("lifestyle").slash(LATEST).withRel("latestLifestyle"));
 				return resource;
 			}
 		};
