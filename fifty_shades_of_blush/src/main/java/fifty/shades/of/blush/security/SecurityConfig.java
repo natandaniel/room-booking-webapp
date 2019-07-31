@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors().and()
 			.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
 			.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers(HttpMethod.POST).authenticated().antMatchers(HttpMethod.PUT).authenticated().antMatchers(HttpMethod.DELETE).authenticated().and()
-			.formLogin().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password");
+			.formLogin().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/api/admin").and()
+			.logout().logoutSuccessUrl("/");
 	}
 
 	@Bean
