@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -45,10 +46,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().and()
 			.cors().and()
 			.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-			.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers(HttpMethod.POST).authenticated().antMatchers(HttpMethod.PUT).authenticated().antMatchers(HttpMethod.DELETE).authenticated().and()
+			.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers(HttpMethod.POST).authenticated().antMatchers(HttpMethod.PUT).authenticated().antMatchers(HttpMethod.DELETE).authenticated()
+			.and()
+			.authenticationProvider(getProvider())
 			.formLogin().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/api/admin").and()
 			.logout().logoutSuccessUrl("/");
 	}
+	
+	 @Bean
+	    public AuthenticationProvider getProvider() {
+	        AppAuthProvider provider = new AppAuthProvider();
+	        provider.setUserDetailsService(userDetailsService);
+	        return provider;
+	    }
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
