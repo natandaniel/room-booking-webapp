@@ -1,21 +1,27 @@
 package fifty.shades.of.blush.security;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
@@ -42,23 +48,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.httpBasic().and()
-			.cors().and()
-			.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-			.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers(HttpMethod.POST).authenticated().antMatchers(HttpMethod.PUT).authenticated().antMatchers(HttpMethod.DELETE).authenticated()
-			.and()
-			.authenticationProvider(getProvider())
-			.formLogin().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/api/admin").and()
-			.logout().logoutSuccessUrl("/");
+
+		http.httpBasic().and().cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and().authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate")
+				.permitAll().anyRequest().authenticated().and().formLogin().loginProcessingUrl("/api/authenticate")
+				.usernameParameter("username").passwordParameter("password")
+				.successHandler(new AuthentificationLoginSuccessHandler()).and().logout().logoutSuccessUrl("/");
 	}
-	
-	 @Bean
-	    public AuthenticationProvider getProvider() {
-	        AppAuthProvider provider = new AppAuthProvider();
-	        provider.setUserDetailsService(userDetailsService);
-	        return provider;
-	    }
+
+	private class AuthentificationLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+		@Override
+		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+				Authentication authentication) throws IOException, ServletException {
+			response.setStatus(HttpServletResponse.SC_OK);
+		}
+	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
@@ -73,17 +77,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
-	
+
 	@Bean
 	public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-	    StrictHttpFirewall firewall = new StrictHttpFirewall();
-	    firewall.setAllowUrlEncodedSlash(true);    
-	    return firewall;
+		StrictHttpFirewall firewall = new StrictHttpFirewall();
+		firewall.setAllowUrlEncodedSlash(true);
+		return firewall;
 	}
-	
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-	    super.configure(web);
-	    web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
+		super.configure(web);
+		web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
 	}
 }
