@@ -2,7 +2,7 @@ delete from articles;
 delete from article_content;
 delete from users;
 
-insert into users (id, username, password, first_name, last_name, created_at, updated_at) values(1, 'natandaniel', 'natandaniel', 'natan', 'daniel', TO_DATE('01/07/2019', 'DD/MM/YYYY') , TO_DATE('17/12/2019', 'DD/MM/YYYY') );
+--insert into users (id, username, password, first_name, last_name, created_at, updated_at) values(1, 'natandaniel', 'natandaniel', 'natan', 'daniel', TO_DATE('01/07/2019', 'DD/MM/YYYY') , TO_DATE('17/12/2019', 'DD/MM/YYYY') );
 
 insert into articles (id, title, subtitle, img_name, article_type, created_at, updated_at) 
 values (1, 'Sephora Wonder Kit', 'Everything about Sephora''s latest make-up kit', 'makeup', 'BEAUTY', TO_DATE('01/07/2019', 'DD/MM/YYYY'), TO_DATE('01/07/2019', 'DD/MM/YYYY') );
