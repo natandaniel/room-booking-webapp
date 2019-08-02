@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.httpBasic().and().cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.and().authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate")
+				.ignoringAntMatchers("/api/authenticate").and().authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate")
 				.permitAll().anyRequest().authenticated().and().formLogin().loginProcessingUrl("/api/authenticate")
 				.usernameParameter("username").passwordParameter("password")
 				.successHandler(new AuthentificationLoginSuccessHandler()).and().logout().logoutSuccessUrl("/");
