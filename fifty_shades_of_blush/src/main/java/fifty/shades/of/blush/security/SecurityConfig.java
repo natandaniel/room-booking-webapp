@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.httpBasic().and().cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.ignoringAntMatchers("/api/authenticate").and().authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate")
 				.permitAll().anyRequest().authenticated().and().formLogin().loginProcessingUrl("/api/authenticate")
-				.usernameParameter("username").passwordParameter("password")
+				.usernameParameter("Username").passwordParameter("Password")
 				.successHandler(new AuthentificationLoginSuccessHandler()).and().logout().logoutSuccessUrl("/");
 	}
 
