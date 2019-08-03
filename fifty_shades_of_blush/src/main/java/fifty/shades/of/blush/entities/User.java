@@ -15,10 +15,9 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.ToString;
@@ -39,21 +38,22 @@ public class User implements Serializable {
 	@NotBlank
 	private String username;
 
-	@JsonIgnore
 	private String password;
 
 	private String[] roles;
 
+	private String token;
+	
+	private HttpStatus status;
+
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreatedDate
-	@JsonIgnore
 	private Date createdAt;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
-	@JsonIgnore
 	private Date updatedAt;
 
 	public void setPassword(String password) {
@@ -62,23 +62,13 @@ public class User implements Serializable {
 	
 	public User() {}
 
-	public User(String username, String password, String... roles) {
+	public User(String username, String password, String token, HttpStatus status, String... roles) {
 		this.username = username;
 		this.setPassword(password);
 		this.roles = roles;
+		this.token = token;
+		this.status = status;
 		this.createdAt = new Date();
 		this.updatedAt = new Date();
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-	
-	public String[] getRoles() {
-		return roles;
 	}
 }
