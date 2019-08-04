@@ -49,11 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate").permitAll()
 				.antMatchers("/**").authenticated().and().authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
-				.and().headers().and().exceptionHandling().and().formLogin().passwordParameter("password")
+				.and().exceptionHandling().and().formLogin().passwordParameter("password")
 				.usernameParameter("username").and().logout()
 				.deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().cors().and()
 				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.ignoringAntMatchers("/api/authenticate");
+				.ignoringAntMatchers("/api/authenticate", "/h2-console/**");
 
 		@SuppressWarnings("rawtypes")
 		SecurityConfigurer securityConfigurerAdapter = new AuthTokenConfig(userDetailsService);

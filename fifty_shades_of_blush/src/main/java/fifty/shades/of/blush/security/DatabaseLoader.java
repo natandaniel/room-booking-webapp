@@ -31,7 +31,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
 		} catch (ResourceNotFoundException e) {
 
-			User u000 = new User("natandaniel", "natandaniel", EMPTY, HttpStatus.OK, "ROLE_MANAGER", "ROLE_USER");
+			User u000 = new User(1L, "natandaniel", "natandaniel", EMPTY, HttpStatus.OK, "ROLE_MANAGER", "ROLE_USER");
 			users.save(u000);
 		}
 	}

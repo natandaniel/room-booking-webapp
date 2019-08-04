@@ -2,6 +2,7 @@ package fifty.shades.of.blush.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fifty.shades.of.blush.entities.User;
+import fifty.shades.of.blush.repositories.UserRepository;
 import fifty.shades.of.blush.security.AuthenticationRequest;
 import fifty.shades.of.blush.security.TokenUtil;
 
@@ -34,17 +36,24 @@ public class LoginController {
 
 	@Autowired
 	private UserDetailsService customUserDetailsService;
+	
+	@Autowired
+	UserRepository users;
 
 	@PostMapping
 	public ResponseEntity<User> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+		
 		try {
+			
 			String username = authenticationRequest.getUsername();
 			String password = authenticationRequest.getPassword();
 
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 			Authentication authentication = this.authenticationManager.authenticate(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
 			UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+			Optional<User> user =  users.findByUsername(username);
 
 			List<String> roles = new ArrayList<String>();
 
@@ -52,7 +61,7 @@ public class LoginController {
 				roles.add(authority.toString());
 			}
 
-			return new ResponseEntity<User>(new User(userDetails.getUsername(), userDetails.getPassword(),
+			return new ResponseEntity<User>(new User(user.get().getId(), userDetails.getUsername(), userDetails.getPassword(),
 					TokenUtil.createToken(userDetails), HttpStatus.OK, roles.toArray(new String[2])), HttpStatus.OK);
 
 		} catch (BadCredentialsException bce) {
