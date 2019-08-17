@@ -16,9 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fifty.shades.of.blush.entities.User;
@@ -27,7 +27,6 @@ import fifty.shades.of.blush.security.AuthenticationRequest;
 import fifty.shades.of.blush.security.TokenUtil;
 
 @RestController
-@RequestMapping(path = "/api/authenticate")
 @CrossOrigin(origins = "*")
 public class LoginController {
 
@@ -40,7 +39,7 @@ public class LoginController {
 	@Autowired
 	UserRepository users;
 
-	@PostMapping
+	@PostMapping(path = "/api/authenticate")
 	public ResponseEntity<User> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
 		
 		try {
@@ -71,4 +70,10 @@ public class LoginController {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
+	
+    @GetMapping(path = "/api/basicauth")
+    public AuthenticationBean authenticate() {
+        //throw new RuntimeException("Some Error has Happened! Contact Support at ***-***");
+        return new AuthenticationBean("You are authenticated");
+    }   
 }

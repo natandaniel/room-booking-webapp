@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.SecurityConfigurer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +18,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,21 +46,65 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//
+//		http.cors().and().csrf().disable()// csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//				// .ignoringAntMatchers("/api/authenticate","/h2-console/**").and()
+//				.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate")
+//				.permitAll().antMatchers("/api/perform-logout").permitAll().anyRequest().authenticated().and()
+//				.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and().logout()
+//				.logoutUrl("/api/perform-logout").logoutSuccessHandler(logoutSuccessHandler())
+//				.invalidateHttpSession(true).deleteCookies("JSESSIONID");
+//
+//		@SuppressWarnings("rawtypes")
+//		SecurityConfigurer securityConfigurerAdapter = new AuthTokenConfig(userDetailsService);
+//		http.apply(securityConfigurerAdapter);
+//	}
+	
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+	        .cors()
+	        
+	        .and()
+	        	
+	        .csrf().disable()   
+	        
+	        .authorizeRequests()
+	        
+	        	.antMatchers(HttpMethod.GET).permitAll()
+	        	
+	            .anyRequest().authenticated()
+	            
+	        .and()
+	            
+	        .httpBasic()
+	        
+	        .and()
+	        
+	        .logout()
+	        
+	        	.logoutUrl("/api/perform-logout")
+	        	.invalidateHttpSession(true)
+	        	.deleteCookies("JSESSIONID")
+	        	.logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)));
+    }
 
-		http.authorizeRequests().antMatchers(HttpMethod.GET).permitAll().antMatchers("/api/authenticate").permitAll()
-				.antMatchers("/**").authenticated().and().authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER")
-				.and().exceptionHandling().and().formLogin().passwordParameter("password")
-				.usernameParameter("username").and().logout()
-				.deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().cors().and()
-				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.ignoringAntMatchers("/api/authenticate", "/h2-console/**");
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
+	}
 
-		@SuppressWarnings("rawtypes")
-		SecurityConfigurer securityConfigurerAdapter = new AuthTokenConfig(userDetailsService);
-		http.apply(securityConfigurerAdapter);
+	@Bean
+	public AuthenticationFailureHandler customAuthenticationFailureHandler() {
+		return new CustomAuthenticationFailureHandler();
+	}
+
+	@Bean
+	public LogoutSuccessHandler logoutSuccessHandler() {
+		return new CustomLogoutSuccessHandler();
 	}
 
 	@Bean
