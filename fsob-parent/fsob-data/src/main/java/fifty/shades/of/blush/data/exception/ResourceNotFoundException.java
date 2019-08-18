@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.data;
+package fifty.shades.of.blush.data.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

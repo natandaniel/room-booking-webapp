@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import fifty.shades.of.blush.data.ResourceNotFoundException;
-import fifty.shades.of.blush.data.UserRepository;
+import fifty.shades.of.blush.data.exception.ResourceNotFoundException;
+import fifty.shades.of.blush.data.repository.UserRepository;
 
 @Service
 public class UserRepositoryUserDetailsService implements UserDetailsService {

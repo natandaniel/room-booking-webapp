@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.data;
+package fifty.shades.of.blush.data.repository;
 
 import java.util.Optional;
 

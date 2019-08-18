@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fifty.shades.of.blush.data.ArticleRepository;
+import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
 
 @RestController
@@ -32,7 +32,7 @@ public class FashionArticlesController {
 	@GetMapping("/fashion")
 	public Resources<ArticleResource> getFashionArticles() {
 
-		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(FASHION);
+		Iterable<Article> articles = articleRepo.findByCategoryOrderByCreatedAtDesc(FASHION);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -45,7 +45,7 @@ public class FashionArticlesController {
 	@GetMapping("/fashion/recent")
 	public Resources<ArticleResource> getRecentFashionArticles() {
 
-		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(FASHION);
+		Iterable<Article> articles = articleRepo.findTop2ByCategoryOrderByCreatedAtDesc(FASHION);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -58,7 +58,7 @@ public class FashionArticlesController {
 	@GetMapping("/fashion/latest")
 	public Resources<ArticleResource> getLatestFashionArticle() {
 
-		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(FASHION);
+		Iterable<Article> articles = articleRepo.findTop1ByCategoryOrderByCreatedAtDesc(FASHION);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);

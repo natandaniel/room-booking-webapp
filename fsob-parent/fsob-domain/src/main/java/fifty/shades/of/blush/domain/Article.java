@@ -13,7 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,19 +31,15 @@ public class Article {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(min = 5, message = "Title must be at least 5 characters long")
 	private String title;
-	
-	@Size(min = 5, message = "Subtitle must be at least 5 characters long")
 	private String subtitle;
-
-	private String imgName;
-
-	@Column(name="article_type")
-	private String type;
+	private String category;
 	
 	@OneToMany(mappedBy="article", cascade = CascadeType.ALL)
-	private List<ArticleContent> paragraphs;
+	private List<ArticleParagraph> paragraphs;
+	
+	@OneToMany(mappedBy="article", cascade = CascadeType.ALL)
+	private List<ArticleFile> files;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)

@@ -11,21 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Entity
 @SuppressWarnings("serial")
 @Data
-@ToString(exclude = "password")
 @Table(name = "users")
 public class User implements Serializable {
 
@@ -35,16 +31,9 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
 	private String username;
-
 	private String password;
-
 	private String[] roles;
-
-	private String token;
-	
-	private HttpStatus status;
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -59,16 +48,11 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
 	}
-	
-	public User() {}
 
-	public User(Long id, String username, String password, String token, HttpStatus status, String... roles) {
-		this.id = id;
+	public User(String username, String password,String... roles) {
 		this.username = username;
 		this.setPassword(password);
 		this.roles = roles;
-		this.token = token;
-		this.status = status;
 		this.createdAt = new Date();
 		this.updatedAt = new Date();
 	}

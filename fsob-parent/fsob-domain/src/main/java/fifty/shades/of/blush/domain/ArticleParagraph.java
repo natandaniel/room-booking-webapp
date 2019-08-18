@@ -12,8 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -25,22 +23,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Entity
-@Table(name = "article_content")
-public class ArticleContent {
-	
+@Table(name = "article_paragraphs")
+public class ArticleParagraph {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
-	@JoinColumn(name="article_id")
+	@JoinColumn(name = "article_id")
 	private Article article;
 
-	@NotBlank
-	@Size(min = 5, message = "content must be at least 5 characters long")
-	@Column(length=10000)
+	@Column(length = 10000)
 	private String content;
-
 
 	@Column(nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -51,5 +46,4 @@ public class ArticleContent {
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
-
 }

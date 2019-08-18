@@ -10,16 +10,13 @@ import lombok.Getter;
 public class ArticleResource extends ResourceSupport {
 	
 	@Getter
-	private final String type;
-
-	@Getter
 	private final String title;
 
 	@Getter
 	private final String subtitle;
-
+	
 	@Getter
-	private final String imgName;
+	private final String category;
 
 	@Getter
 	private final Date createdAt;
@@ -28,10 +25,9 @@ public class ArticleResource extends ResourceSupport {
 	private final Date updatedAt;
 
 	public ArticleResource(Article article) {
-		this.type = article.getType();
 		this.title = article.getTitle();
 		this.subtitle = article.getSubtitle();
-		this.imgName = article.getImgName();
+		this.category = article.getCategory();
 		this.createdAt = article.getCreatedAt();
 		this.updatedAt = article.getUpdatedAt();
 	}

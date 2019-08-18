@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fifty.shades.of.blush.data.ArticleRepository;
+import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
 
 @RestController
@@ -34,7 +34,7 @@ public class BeautyArticlesController {
 	@GetMapping("/beauty")
 	public ResponseEntity<Resources<ArticleResource>> getBeautyArticles() {
 
-		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(BEAUTY);
+		Iterable<Article> articles = articleRepo.findByCategoryOrderByCreatedAtDesc(BEAUTY);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -47,7 +47,7 @@ public class BeautyArticlesController {
 	@GetMapping("/beauty/recent")
 	public ResponseEntity<Resources<ArticleResource>> getRecentBeautyArticles() {
 
-		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(BEAUTY);
+		Iterable<Article> articles = articleRepo.findTop2ByCategoryOrderByCreatedAtDesc(BEAUTY);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -60,7 +60,7 @@ public class BeautyArticlesController {
 	@GetMapping("/beauty/latest")
 	public ResponseEntity<Resources<ArticleResource>> getLatestBeautyArticle() {
 
-		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(BEAUTY);
+		Iterable<Article> articles = articleRepo.findTop1ByCategoryOrderByCreatedAtDesc(BEAUTY);
 
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);

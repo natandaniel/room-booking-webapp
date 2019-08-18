@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fifty.shades.of.blush.data.ArticleRepository;
+import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
 
 @RestController
@@ -32,7 +32,7 @@ public class TravelArticlesController {
 	@GetMapping("/travel")
 	public Resources<ArticleResource> getTravelArticles() {
 		
-		Iterable<Article> articles = articleRepo.findByTypeOrderByCreatedAtDesc(TRAVEL);
+		Iterable<Article> articles = articleRepo.findByCategoryOrderByCreatedAtDesc(TRAVEL);
 		
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -44,7 +44,7 @@ public class TravelArticlesController {
 	@GetMapping("/travel/recent")
 	public Resources<ArticleResource> getRecentTravelArticles() {
 		
-		Iterable<Article> articles = articleRepo.findTop2ByTypeOrderByCreatedAtDesc(TRAVEL);
+		Iterable<Article> articles = articleRepo.findTop2ByCategoryOrderByCreatedAtDesc(TRAVEL);
 		
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
@@ -56,7 +56,7 @@ public class TravelArticlesController {
 	@GetMapping("/travel/latest")
 	public Resources<ArticleResource> getLatestTravelArticle() {
 		
-		Iterable<Article> articles = articleRepo.findTop1ByTypeOrderByCreatedAtDesc(TRAVEL);
+		Iterable<Article> articles = articleRepo.findTop1ByCategoryOrderByCreatedAtDesc(TRAVEL);
 		
 		List<ArticleResource> articleResources = new ArticleResourceAssembler().toResources(articles);
 		Resources<ArticleResource> recentResources = new Resources<ArticleResource>(articleResources);
