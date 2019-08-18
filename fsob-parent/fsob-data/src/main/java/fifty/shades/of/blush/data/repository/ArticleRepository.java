@@ -1,10 +1,14 @@
 package fifty.shades.of.blush.data.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import fifty.shades.of.blush.domain.Article;
 
 public interface ArticleRepository extends PagingAndSortingRepository<Article, Long> {
+	
+	Optional<Article> findByTitle(String titel);
 
 	Iterable<Article> findByCategoryOrderByCreatedAtDesc(String Category);
 	

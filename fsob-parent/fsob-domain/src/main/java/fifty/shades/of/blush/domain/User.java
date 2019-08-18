@@ -48,6 +48,8 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
 	}
+	
+	public User() {};
 
 	public User(String username, String password,String... roles) {
 		this.username = username;

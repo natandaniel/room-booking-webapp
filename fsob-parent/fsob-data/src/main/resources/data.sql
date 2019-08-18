@@ -1,7 +1,7 @@
-delete from articles;
-delete from article_files;
-delete from article_paragraphs;
-delete from users;
+--delete from articles;
+--delete from article_files;
+--delete from article_paragraphs;
+--delete from users;
 
 --insert into articles (id, title, subtitle, img_name, article_type, created_at, updated_at) 
 --values (1, 'Sephora Wonder Kit', 'Everything about Sephora''s latest make-up kit', 'makeup', 'BEAUTY', TO_DATE('01/07/2019', 'DD/MM/YYYY'), TO_DATE('01/07/2019', 'DD/MM/YYYY') );
