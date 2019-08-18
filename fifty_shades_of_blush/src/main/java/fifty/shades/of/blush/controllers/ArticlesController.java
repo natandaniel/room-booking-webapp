@@ -56,6 +56,7 @@ public class ArticlesController {
 	public ArticleResource createArticle(@RequestBody ArticleDTO createdArticle) {
 		
 		System.out.println(createdArticle);
+		
 		return null;
 
 //		createdArticle.setCreatedAt(new Date());

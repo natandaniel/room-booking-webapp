@@ -20,6 +20,14 @@ public class ArticleDTO {
 	private String image;
 
 	public ArticleDTO() {
+	}
+
+	@Override
+	public String toString() {
+		return "ArticleDTO [title=" + title + ", subtitle=" + subtitle + ", category=" + category + ", body=" + body
+				+ ", image=" + image + "]";
 	};
+	
+	
 
 }
