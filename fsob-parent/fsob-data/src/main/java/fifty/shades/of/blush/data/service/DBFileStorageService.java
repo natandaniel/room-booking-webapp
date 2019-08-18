@@ -1,6 +1,7 @@
 package fifty.shades.of.blush.data.service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,15 @@ public class DBFileStorageService {
 	@Autowired
 	private ArticleFilesRepository articleFilesRepo;
 
-	public ArticleFile storeFile(MultipartFile articleFile, Article article) throws FileStorageException {
+	public ArticleFile storeFile(MultipartFile articleFile, Article article) throws Exception {
 		// Normalize file name
 		String fileName = StringUtils.cleanPath(articleFile.getOriginalFilename());
+		
+		Optional<ArticleFile> optArticleFile = articleFilesRepo.findByFileName(fileName);
+		
+		if(optArticleFile.get() != null) {
+			throw new Exception("Cannot upload same file");
+		}
 
 		try {
 			// Check if the file's name contains invalid characters

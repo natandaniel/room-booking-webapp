@@ -43,7 +43,7 @@ public class ArticleFilesController {
     private DBFileStorageService DBFileStorageService;
 
     @PostMapping("/uploadFile/{articleId}")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("articleId") Long articleId) throws FileStorageException {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("articleId") Long articleId) throws Exception {
         
     	Article article = articles.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
     	
@@ -59,14 +59,14 @@ public class ArticleFilesController {
     }
 
     @PostMapping("/uploadMultipleFiles/{articleId}")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("articleId") Long articleId) {
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("articleId") Long articleId) throws FileStorageException {
     	
     	return Arrays.asList(files)
                 .stream()
                 .map(file -> {
 					try {
 						return uploadFile(file, articleId);
-					} catch (FileStorageException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					return null;
