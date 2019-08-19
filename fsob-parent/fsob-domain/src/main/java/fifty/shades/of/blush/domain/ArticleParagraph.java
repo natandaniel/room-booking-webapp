@@ -16,12 +16,9 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Entity
 @Table(name = "article_paragraphs")
 public class ArticleParagraph {
@@ -46,4 +43,13 @@ public class ArticleParagraph {
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
+	
+	public ArticleParagraph() {}
+	
+	public ArticleParagraph(Article article, String content) {
+		this.article = article;
+		this.content = content;
+		this.createdAt = new Date();
+		this.updatedAt = new Date();
+	}
 }
