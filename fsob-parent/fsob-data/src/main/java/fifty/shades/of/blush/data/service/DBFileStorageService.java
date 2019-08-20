@@ -1,6 +1,7 @@
 package fifty.shades.of.blush.data.service;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +27,30 @@ public class DBFileStorageService {
 		
 		Optional<ArticleFile> optArticleFile = articleFilesRepo.findByFileName(fileName);
 		
-		if(optArticleFile.get() != null) {
-			throw new Exception("Cannot upload same file");
-		}
-
 		try {
-			// Check if the file's name contains invalid characters
-			if (fileName.contains("..")) {
-				throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+			optArticleFile.get();
+			
+			throw new Exception("Cannot upload same file");
+		}catch(NoSuchElementException e){
+			
+			try {
+				// Check if the file's name contains invalid characters
+				if (fileName.contains("..")) {
+					throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+				}
+
+				ArticleFile dbFile = new ArticleFile(fileName, articleFile.getContentType(), articleFile.getBytes(),
+						article);
+
+				return articleFilesRepo.save(dbFile);
+			} catch (IOException ex) {
+				throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
 			}
-
-			ArticleFile dbFile = new ArticleFile(fileName, articleFile.getContentType(), articleFile.getBytes(),
-					article);
-
-			return articleFilesRepo.save(dbFile);
-		} catch (IOException ex) {
-			throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
 		}
+		
+
+
+		
 	}
 
 	public ArticleFile getFile(String fileId) throws MyFileNotFoundException {
