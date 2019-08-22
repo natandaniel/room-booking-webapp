@@ -14,27 +14,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
-import fifty.shades.of.blush.web.api.ArticleDTO;
+import fifty.shades.of.blush.web.api.UploadFileResponse;
 import fifty.shades.of.blush.web.api.resource.ArticleResource;
 import fifty.shades.of.blush.web.api.resource.ArticleResourceAssembler;
+import fifty.shades.of.blush.web.api.services.ArticleFilesService;
+import fifty.shades.of.blush.web.api.services.ArticleParagraphsService;
+import fifty.shades.of.blush.web.api.services.ArticlesService;
 
 @RestController
 @RequestMapping(path = "/api/articles", produces = "application/hal+json")
 @CrossOrigin(origins = "*")
 public class ArticlesController {
 
+	@Autowired
 	private ArticleRepository articleRepo;
 
-	public ArticlesController(ArticleRepository articleRepo) {
-		this.articleRepo = articleRepo;
-	}
+	@Autowired
+	ArticlesService artService;
+
+	@Autowired
+	ArticleParagraphsService artParaService;
+
+	@Autowired
+	ArticleFilesService artFilesService;
 
 	@Autowired
 	EntityLinks entityLinks;
@@ -52,24 +62,15 @@ public class ArticlesController {
 
 		return recentResources;
 	}
-	
-	@PostMapping(path="/create", consumes="application/json")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ArticleResource createArticle(@RequestBody ArticleDTO createdArticle) {
-		
-		System.out.println(createdArticle);
-		
-		return null;
 
-//		createdArticle.setCreatedAt(new Date());
-//		createdArticle.setUpdatedAt(new Date());
-//
-//		Article article = articleRepo.save(createdArticle);
-//
-//		ArticleResource articleResource = new ArticleResourceAssembler().instantiateResource(article);
-//
-//		articleResource.add(linkTo(methodOn(ArticlesController.class).createArticle(article)).withRel("create"));
-//
-//		return articleResource;
+	@PostMapping(path = "/create", consumes = "multipart/form-data")
+	@ResponseStatus(HttpStatus.CREATED)
+	public UploadFileResponse createArticle(@RequestParam("title") String title, @RequestParam("subtitle") String subtitle,
+			@RequestParam("category") String category, @RequestParam("body") String body,
+			@RequestParam("file") MultipartFile file) throws Exception {
+
+		Article newArticle = artService.createArticle(title, subtitle, category);
+		artParaService.createParagraph(body, newArticle.getId());
+		return artFilesService.uploadFile(file, newArticle.getId());
 	}
 }
