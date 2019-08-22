@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.web.api;
+package fifty.shades.of.blush.web.api.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;

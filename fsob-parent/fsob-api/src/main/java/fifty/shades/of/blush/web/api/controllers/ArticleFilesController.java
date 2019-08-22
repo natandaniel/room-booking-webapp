@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.web.api;
+package fifty.shades.of.blush.web.api.controllers;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import fifty.shades.of.blush.data.exception.FileStorageException;
 import fifty.shades.of.blush.data.exception.MyFileNotFoundException;
+import fifty.shades.of.blush.web.api.UploadFileResponse;
 import fifty.shades.of.blush.web.api.services.ArticleFilesService;
 
 @RestController

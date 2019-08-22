@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.web.api;
+package fifty.shades.of.blush.web.api.controllers;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
+import fifty.shades.of.blush.web.api.resource.ArticleResource;
+import fifty.shades.of.blush.web.api.resource.ArticleResourceAssembler;
 
 @RestController
 @RequestMapping(path = "/api/articles", produces = "application/hal+json")

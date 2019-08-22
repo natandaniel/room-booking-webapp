@@ -1,4 +1,4 @@
-package fifty.shades.of.blush.web.api;
+package fifty.shades.of.blush.web.api.resource;
 
 import java.util.Date;
 
