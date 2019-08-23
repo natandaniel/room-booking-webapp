@@ -5,6 +5,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import fifty.shades.of.blush.data.repository.ArticleRepository;
 import fifty.shades.of.blush.domain.Article;
-import fifty.shades.of.blush.web.api.UploadFileResponse;
 import fifty.shades.of.blush.web.api.resource.ArticleResource;
 import fifty.shades.of.blush.web.api.resource.ArticleResourceAssembler;
 import fifty.shades.of.blush.web.api.services.ArticleFilesService;
@@ -33,6 +34,8 @@ import fifty.shades.of.blush.web.api.services.ArticlesService;
 @RequestMapping(path = "/api/articles", produces = "application/hal+json")
 @CrossOrigin(origins = "*")
 public class ArticlesController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ArticleFilesService.class);
 
 	@Autowired
 	private ArticleRepository articleRepo;
@@ -65,12 +68,12 @@ public class ArticlesController {
 
 	@PostMapping(path = "/create", consumes = "multipart/form-data")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UploadFileResponse createArticle(@RequestParam("title") String title,
+	public void createArticle(@RequestParam("title") String title,
 			@RequestParam("subtitle") String subtitle, @RequestParam("category") String category,
-			@RequestParam("body") String body, @RequestParam("file") MultipartFile file) throws Exception {
-
+			@RequestParam("body") String body, @RequestParam("mainCardImage") MultipartFile file) throws Exception {
+		
 		Article newArticle = artService.createArticle(title, subtitle, category);
 		artParaService.insertArticleBody(body, newArticle.getId());
-		return artFilesService.uploadFile(file, newArticle.getId());
+		artFilesService.uploadMainFile(file, newArticle.getId());
 	}
 }

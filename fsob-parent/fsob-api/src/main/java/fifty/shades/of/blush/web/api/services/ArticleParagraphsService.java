@@ -33,7 +33,7 @@ public class ArticleParagraphsService {
 		}).collect(Collectors.toList());
 	}
 
-	private ArticleParagraph createParagraph(String content, Long articleId) {
+	public ArticleParagraph createParagraph(String content, Long articleId) {
 		
 		Article article = artRepo.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
 		ArticleParagraph paragraph = new ArticleParagraph(article, content);

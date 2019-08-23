@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import fifty.shades.of.blush.data.exception.FileStorageException;
@@ -21,9 +20,7 @@ public class DBFileStorageService {
 	@Autowired
 	private ArticleFilesRepository articleFilesRepo;
 
-	public ArticleFile storeFile(MultipartFile articleFile, Article article) throws Exception {
-		// Normalize file name
-		String fileName = StringUtils.cleanPath(articleFile.getOriginalFilename());
+	public ArticleFile storeFile(String fileName, MultipartFile articleFile, Article article) throws Exception {
 		
 		Optional<ArticleFile> optArticleFile = articleFilesRepo.findByFileName(fileName);
 		
@@ -34,10 +31,6 @@ public class DBFileStorageService {
 		}catch(NoSuchElementException e){
 			
 			try {
-				// Check if the file's name contains invalid characters
-				if (fileName.contains("..")) {
-					throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-				}
 
 				ArticleFile dbFile = new ArticleFile(fileName, articleFile.getContentType(), articleFile.getBytes(),
 						article);
