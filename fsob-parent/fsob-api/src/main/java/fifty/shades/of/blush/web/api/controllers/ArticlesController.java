@@ -65,12 +65,12 @@ public class ArticlesController {
 
 	@PostMapping(path = "/create", consumes = "multipart/form-data")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UploadFileResponse createArticle(@RequestParam("title") String title, @RequestParam("subtitle") String subtitle,
-			@RequestParam("category") String category, @RequestParam("body") String body,
-			@RequestParam("file") MultipartFile file) throws Exception {
+	public UploadFileResponse createArticle(@RequestParam("title") String title,
+			@RequestParam("subtitle") String subtitle, @RequestParam("category") String category,
+			@RequestParam("body") String body, @RequestParam("file") MultipartFile file) throws Exception {
 
 		Article newArticle = artService.createArticle(title, subtitle, category);
-		artParaService.createParagraph(body, newArticle.getId());
+		artParaService.insertArticleBody(body, newArticle.getId());
 		return artFilesService.uploadFile(file, newArticle.getId());
 	}
 }

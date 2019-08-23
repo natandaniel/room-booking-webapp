@@ -1,5 +1,9 @@
 package fifty.shades.of.blush.web.api.services;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +22,22 @@ public class ArticleParagraphsService {
 	@Autowired
 	ArticleParagraphsRepository artParagraphsRepo;
 
-	public ArticleParagraph createParagraph(String content, Long articleId) {
+	public List<ArticleParagraph> insertArticleBody(String body, Long articleId) {
 
-		Article article = artRepo.findById(articleId)
-				.orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
+		artRepo.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
 
-		ArticleParagraph newparagraph = new ArticleParagraph(article, content);
+		String[] paragraphs = body.split("\\R{2,}");
 
-		return artParagraphsRepo.save(newparagraph);
+		return Arrays.asList(paragraphs).stream().map(paragraph -> {
+			return this.createParagraph(paragraph, articleId);
+		}).collect(Collectors.toList());
+	}
+
+	private ArticleParagraph createParagraph(String content, Long articleId) {
+		
+		Article article = artRepo.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
+		ArticleParagraph paragraph = new ArticleParagraph(article, content);
+		return artParagraphsRepo.save(paragraph);
 	}
 
 }
